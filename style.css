@@ -134,4 +134,29 @@ body {
   .semesterResult {
     margin-top: 10px;
   }
+  .whatsapp-link {
+    text-decoration: none; /* Removes underline */
+    color: #25D366; /* Optional: WhatsApp green */
+    font-weight: bold;
+    transition: color 0.3s ease;
+  }
+  
+  .whatsapp-link:hover {
+    color: #128C7E; /* Optional: darker green on hover */
+  }
+  .whatsapp-button {
+    text-decoration: none; /* Removes underline */
+    background-color:  #007bff;;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    display: inline-block;
+    transition: background-color 0.3s ease;
+  }
+  
+  .whatsapp-button:hover {
+    background-color:  #0056b3;
+  }
+  
   
