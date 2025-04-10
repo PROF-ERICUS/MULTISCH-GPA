@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Select Your School - GPA/CGPA Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f2f5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    h1 {
+      margin-bottom: 30px;
+      color: #333;
+    }
+
+    .school-logos {
+      display: flex;
+      gap: 30px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .school-logo {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border-radius: 10px;
+      padding: 10px;
+      background: white;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .school-logo:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .school-logo img {
+      width: 100px;
+      height: 100px;
+      object-fit: contain;
+      margin-bottom: 10px;
+    }
+
+    .school-logo span {
+      font-weight: bold;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <h1>Select Your School</h1>
+  <div class="school-logos">
+    <a class="school-logo" href="gctu.html">
+      <img src="gctu logo.jpg" alt="GCTU Logo">
+      <span>GCTU</span>
+    </a>
+    <a class="school-logo" href="ucc.html">
+      <img src="ucc logo.jpg" alt="UCC Logo">
+      <span>UCC</span>
+    </a>
+    <a class="school-logo" href="legon.html">
+        <img src="legon logo.jpg" alt="legon Logo">
+        <span>LEGON</span>
+      </a>
+      <a class="school-logo" href="knust.html">
+        <img src="knust.jpg" alt="knust Logo">
+        <span>KNUST</span>
+      </a>
+    <!-- Future school logos go here -->
+  </div>
+</body>
+</html>

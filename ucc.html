@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UCC GPA & CGPA Calculator</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="popup" class="popup">
+    <div class="popup-content">
+      <h3>Designed & Developed by Eric Andoh</h3>
+      <p>Eric is an IT student at GCTU and this system helps you calculate your academic performance using the official UCC grading system.</p>
+      <button onclick="closePopup()">Continue</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="developer-info">
+      <img src="vault.jpg" alt="Developer Profile">
+      <div>
+        <h3>Eric Andoh</h3>
+        <p>Developer</p>
+      </div>
+    </div>
+
+    <label>
+      <input type="checkbox" id="modeToggle"> Dark Mode
+    </label>
+
+    <h2>GPA Calculator</h2>
+    <form id="gpaForm">
+      <div id="semesterInputs">
+        <div class="semesterSection">
+          <h4>Semester 1</h4>
+          <div class="courseInputs">
+            <div class="courseRow">
+              <input type="text" placeholder="Course Name" required>
+              <input type="number" placeholder="Credit Hours" min="1" required>
+              <input type="number" placeholder="Marks (0-100)" min="0" max="100" required>
+              <span class="grade-box"></span>
+            </div>
+          </div>
+          <button type="button" onclick="addCourse(this)">Add Course</button>
+          <button type="button" onclick="calculateSemesterGPA(this)">Calculate Semester GPA</button>
+          <div class="semesterResult"></div>
+        </div>
+      </div>
+      <button type="button" onclick="addSemester()">Add Another Semester</button>
+    </form>
+    <button type="button" onclick="calculateCGPA()">Calculate CGPA</button>
+    <button type="button" onclick="resetForm()">Reset All</button>
+    
+
+    <!-- WhatsApp Chat Button -->
+    <div class="whatsapp-chat">
+      <a href="https://wa.link/wn9zbf" target="_blank">
+        <button class="whatsapp-button">Chat with Developer on WhatsApp</button>
+      </a>
+    </div>
+
+    <div id="cgpaResult" class="result-display"></div>
+  </div>
+
+  <script src="js/ucc.js"></script>
+</body>
+</html>
