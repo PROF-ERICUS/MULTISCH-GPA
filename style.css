@@ -158,5 +158,24 @@ body {
   .whatsapp-button:hover {
     background-color:  #0056b3;
   }
+
+
+
+
+ .print-section {
+      display: none;
+    }
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      .print-section, .print-section * {
+        visibility: visible;
+      }
+      .print-section {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
   
   
