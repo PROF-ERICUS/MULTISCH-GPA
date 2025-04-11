@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Select Your School - GPA/CGPA Calculator</title>
   <style>
     body {
@@ -12,13 +12,17 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 100vh;
+      min-height: 100vh;
       margin: 0;
+      padding: 20px;
+      box-sizing: border-box;
+      text-align: center;
     }
 
     h1 {
       margin-bottom: 30px;
       color: #333;
+      font-size: 24px;
     }
 
     .school-logos {
@@ -38,6 +42,8 @@
       padding: 10px;
       background: white;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      text-decoration: none;
+      color: inherit;
     }
 
     .school-logo:hover {
@@ -55,98 +61,105 @@
     .school-logo span {
       font-weight: bold;
       color: #555;
+      font-size: 18px;
+      transition: color 0.3s ease;
     }
-    /* Remove underline and customize hover for school names */
-.school-logo {
-  text-decoration: none; /* Removes underline */
-  color: inherit; /* Keeps text color consistent */
-}
 
-/* Optional: style the text (school name) directly */
-.school-logo span {
-  font-weight: bold;
-  color: #555;
-  font-size: 18px;
-  transition: color 0.3s ease;
-}
+    .school-logo[href*="gctu"] span:hover {
+      color: #004aad;
+    }
 
-/* Optional: individual hover colors */
-.school-logo[href*="gctu"] span:hover {
-  color: #004aad; /* Deep blue for GCTU */
-}
+    .school-logo[href*="ucc"] span:hover {
+      color: #c62828;
+    }
 
-.school-logo[href*="ucc"] span:hover {
-  color: #c62828; /* UCC red */
-}
+    .school-logo[href*="legon"] span:hover {
+      color: #00274d;
+    }
 
-.school-logo[href*="legon"] span:hover {
-  color: #00274d; /* Legon navy blue */
-}
+    .school-logo[href*="knust"] span:hover {
+      color: #2e7d32;
+    }
 
-.school-logo[href*="knust"] span:hover {
-  color: #2e7d32; /* KNUST green */
-}
-.donate-section {
-  padding: 30px;
-  background-color: #f9f9f9;
-  border-radius: 10px;
-  text-align: center;
-  margin: 30px auto;
-  max-width: 400px;
-}
+    .donate-section {
+      padding: 30px;
+      background-color: #f9f9f9;
+      border-radius: 10px;
+      text-align: center;
+      margin: 30px auto;
+      max-width: 400px;
+    }
 
-.donate-section h2 {
-  color: #222;
-  margin-bottom: 15px;
-}
+    .donate-section h2 {
+      color: #222;
+      margin-bottom: 15px;
+    }
 
-.donate-section ul {
-  list-style: none;
-  padding: 0;
-  color: #333;
-}
+    .donate-section ul {
+      list-style: none;
+      padding: 0;
+      color: #333;
+    }
 
-.whatsapp-button {
-  text-decoration: none;
-  background-color: #25D366;
-  color: white;
-  padding: 10px 20px;
-  border-radius: 8px;
-  font-weight: bold;
-  display: inline-block;
-  margin-top: 10px;
-  transition: background-color 0.3s ease;
-}
+    .whatsapp-button {
+      text-decoration: none;
+      background-color: #25D366;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: bold;
+      display: inline-block;
+      margin-top: 10px;
+      transition: background-color 0.3s ease;
+    }
 
-.whatsapp-button:hover {
-  background-color: #128C7E;
-}
+    .whatsapp-button:hover {
+      background-color: #128C7E;
+    }
 
+    /* Mobile responsiveness */
+    @media (max-width: 600px) {
+      .school-logo img {
+        width: 80px;
+        height: 80px;
+      }
 
+      .school-logo span {
+        font-size: 16px;
+      }
+
+      .donate-section {
+        width: 100%;
+        padding: 20px;
+      }
+
+      h1 {
+        font-size: 20px;
+      }
+    }
   </style>
 </head>
 <body>
   <h1>Select Your School</h1>
   <div class="school-logos">
     <a class="school-logo" href="gctu.html">
-      <img src="gctu logo.jpg" alt="GCTU Logo">
+      <img src="gctu logo.jpg" alt="GCTU Logo" />
       <span>GCTU</span>
     </a>
     <a class="school-logo" href="ucc.html">
-      <img src="ucc logo.jpg" alt="UCC Logo">
+      <img src="ucc logo.jpg" alt="UCC Logo" />
       <span>UCC</span>
     </a>
     <a class="school-logo" href="legon.html">
-        <img src="legon logo.jpg" alt="legon Logo">
-        <span>LEGON</span>
-      </a>
-      <a class="school-logo" href="knust.html">
-        <img src="knust.jpg" alt="knust Logo">
-        <span>KNUST</span>
-      </a>
-  
-    <!-- Future school logos go here -->
+      <img src="legon logo.jpg" alt="Legon Logo" />
+      <span>LEGON</span>
+    </a>
+    <a class="school-logo" href="knust.html">
+      <img src="knust.jpg" alt="KNUST Logo" />
+      <span>KNUST</span>
+    </a>
   </div>
+
   <section class="donate-section">
     <h2>Support Our Work</h2>
     <p>You can support this project via Mobile Money:</p>
@@ -159,6 +172,5 @@
       Confirm on WhatsApp
     </a>
   </section>
-  
 </body>
 </html>
