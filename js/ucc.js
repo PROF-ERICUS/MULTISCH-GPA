@@ -130,4 +130,52 @@ function getUCCGrade(marks) {
   function resetForm() {
     location.reload();
   }
+
+
+
+ function printResults() {
+    let printContent = ``;
+  
+    const semesters = document.querySelectorAll('.semesterSection');
+    let overallGPAInfo = document.getElementById('cgpaResult').innerText;
+  
+    semesters.forEach((semester, index) => {
+      printContent += `<h3>Semester ${index + 1}</h3>`;
+      printContent += `
+        <table border="1" cellspacing="0" cellpadding="8" width="100%">
+          <tr>
+            <th>Course Name</th>
+            <th>Credit Hours</th>
+            <th>Marks</th>
+            <th>Grade</th>
+          </tr>
+      `;
+  
+      const courseRows = semester.querySelectorAll('.courseRow');
+      courseRows.forEach(row => {
+        const inputs = row.querySelectorAll('input');
+        const grade = row.querySelector('.grade-box').innerText;
+        printContent += `
+          <tr>
+            <td>${inputs[0].value}</td>
+            <td>${inputs[1].value}</td>
+            <td>${inputs[2].value}</td>
+            <td>${grade}</td>
+          </tr>
+        `;
+      });
+  
+      const semesterResult = semester.querySelector('.semesterResult').innerText;
+      printContent += `</table><p><strong>${semesterResult}</strong></p><br/>`;
+    });
+  
+    printContent += `<hr/><p><strong>${overallGPAInfo}</strong></p>`;
+  
+    const printWindow = window.open('', '', 'width=800,height=600');
+    printWindow.document.write(`<html><head><title>Print Results</title></head><body>${printContent}</body></html>`);
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
+    printWindow.close();
+  }
   
