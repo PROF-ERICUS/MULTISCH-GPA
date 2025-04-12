@@ -21,18 +21,22 @@ function getGrade(marks) {
   let totalGpaPoints = 0;
   let totalCredits = 0;
   
-  function addCourse(button) {
-    const courseInputs = button.previousElementSibling;
-    const row = document.createElement('div');
-    row.className = 'courseRow';
-    row.innerHTML = `
-      <input type="text" placeholder="Course Name" required>
-      <input type="number" placeholder="Credit Hours" min="1" required>
-      <input type="number" placeholder="Marks (0-100)" min="0" max="100" required>
-      <span class="grade-box"></span>
-    `;
-    courseInputs.appendChild(row);
-  }
+ function addCourse(button) {
+  const courseInputs = button.parentElement.querySelector('.courseInputs');
+
+  const courseRow = document.createElement('div');
+  courseRow.className = 'courseRow';
+
+  courseRow.innerHTML = `
+    <input type="text" placeholder="Course Name" required>
+    <input type="number" placeholder="Credit Hours" min="1" required>
+    <input type="number" placeholder="Marks (0-100)" min="0" max="100" required>
+    <span class="grade-box"></span>
+    <button type="button" class="remove-btn" onclick="removeCourse(this)">❌</button>
+  `;
+
+  courseInputs.appendChild(courseRow);
+}
   
   function calculateSemesterGPA(button) {
     const semesterSection = button.closest('.semesterSection');
