@@ -145,7 +145,7 @@ function getGrade(marks) {
 function printResults() {
     let printContent = `
       <div style="text-align:center;">
-        <img src="https://upload.wikimedia.org/wikipedia/en/thumb/e/e9/KNUST_Logo.png/200px-KNUST_Logo.png" width="100" />
+        <img src="knust.jpg" width="100" />
         <h2>Kwame Nkrumah University of Science and Technology - GPA Report</h2>
       </div>
     `;
