@@ -131,13 +131,38 @@ function getUCCGrade(marks) {
     location.reload();
   }
 
-
-
- function printResults() {
-    let printContent = ``;
+function printResults() {
+    let printContent = `
+      <div style="text-align:center;">
+        <img src="https://upload.wikimedia.org/wikipedia/en/thumb/e/e9/UCC_Logo.png/200px-UCC_Logo.png" width="100" />
+        <h2>University of Cape Coast - GPA Report</h2>
+      </div>
+    `;
   
     const semesters = document.querySelectorAll('.semesterSection');
-    let overallGPAInfo = document.getElementById('cgpaResult').innerText;
+    let summaryTable = `
+      <h3>Semester Summary</h3>
+      <table border="1" cellspacing="0" cellpadding="8" width="100%">
+        <tr><th>Semester</th><th>GPA</th><th>Credits</th><th>Class</th></tr>
+    `;
+  
+    semesters.forEach((semester, index) => {
+      const semesterTitle = `Semester ${index + 1}`;
+      const semesterResult = semester.querySelector('.semesterResult').innerText;
+      const gpaMatch = semesterResult.match(/GPA: ([\d.]+).*?Credits: (\d+).*?Class: (.+)/i);
+  
+      if (gpaMatch) {
+        summaryTable += `<tr>
+          <td>${semesterTitle}</td>
+          <td>${gpaMatch[1]}</td>
+          <td>${gpaMatch[2]}</td>
+          <td>${gpaMatch[3]}</td>
+        </tr>`;
+      }
+    });
+  
+    summaryTable += '</table><br/>';
+    printContent += summaryTable;
   
     semesters.forEach((semester, index) => {
       printContent += `<h3>Semester ${index + 1}</h3>`;
@@ -169,13 +194,24 @@ function getUCCGrade(marks) {
       printContent += `</table><p><strong>${semesterResult}</strong></p><br/>`;
     });
   
+    const overallGPAInfo = document.getElementById('cgpaResult').innerText;
     printContent += `<hr/><p><strong>${overallGPAInfo}</strong></p>`;
   
     const printWindow = window.open('', '', 'width=800,height=600');
-    printWindow.document.write(`<html><head><title>Print Results</title></head><body>${printContent}</body></html>`);
+    printWindow.document.write(`<html><head><title>Print Results</title>
+      <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        table { border-collapse: collapse; }
+        th, td { border: 1px solid #999; text-align: center; }
+        img { margin-bottom: 10px; }
+        @media print {
+          button { display: none; }
+        }
+      </style>
+    </head><body>${printContent}</body></html>`);
     printWindow.document.close();
     printWindow.focus();
     printWindow.print();
-    printWindow.close();
   }
+  
   
