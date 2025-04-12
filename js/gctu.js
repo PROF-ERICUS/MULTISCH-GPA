@@ -145,7 +145,7 @@ function getGrade(marks) {
 function printResults() {
     let printContent = `
       <div style="text-align:center;">
-        <img src="https://upload.wikimedia.org/wikipedia/en/thumb/e/e9/GCTU_Logo.png/200px-GCTU_Logo.png" width="100" />
+        <img src="gctu logo.jpg" width="100" />
         <h2> Ghana Communication Technology University  - GPA Report</h2>
       </div>
     `;
