@@ -148,7 +148,7 @@ function getGrade(marks) {
 function printResults() {
   let printContent = `
     <div style="text-align:center;">
-      <img src="https://upload.wikimedia.org/wikipedia/en/thumb/e/e9/legon_Logo.png/200px-LEGON_Logo.png" width="100" />
+      <img src="legon logo.jpg" width="100" />
       <h2>University of Ghana-Legon - GPA Report</h2>
     </div>
   `;
