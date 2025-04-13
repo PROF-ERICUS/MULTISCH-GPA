@@ -50,9 +50,15 @@ function calculateSemesterGPA(button) {
     const marks = parseFloat(inputs[2].value);
     const grade = getGrade(marks);
     const point = {
-      'A': 4.00, 'A-': 3.75, 'B+': 3.50, 'B': 3.25, 'B-': 3.00,
-      'C+': 2.75, 'C': 2.50, 'C-': 2.00, 'D': 1.50, 'F': 0
-    }[grade];
+  'A': 4.00,
+  'B+': 3.50,
+  'B': 3.00,
+  'C+': 2.50,
+  'C': 2.00,
+  'D+': 1.50,
+  'D': 1.00,
+  'F': 0.00
+}[grade];
 
     const gradeBox = row.querySelector('.grade-box');
     gradeBox.innerText = grade;
