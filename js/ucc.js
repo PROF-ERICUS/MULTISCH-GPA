@@ -9,8 +9,8 @@ function getGrade(marks) {
   if (marks >= 60) return 'C';
   if (marks >= 55) return 'D+';
   if (marks >= 50) return 'D';
- if (marks >= 45) return 'E';
-  return 'F';
+ 
+  return 'E';
 }
 
 function classifyGPA(gpa) {
@@ -19,7 +19,7 @@ function classifyGPA(gpa) {
   if (gpa >= 2.50) return 'Second Class Lower';
   if (gpa >= 2.00) return 'Third Class';
   if (gpa >= 1.50) return 'Pass';
-  if (gpa >= 0.50) return 'Unsatisfactory';
+  
   return 'Fail';
 }
 
@@ -67,8 +67,8 @@ function calculateSemesterGPA(button) {
       'C': 2.00,
       'D+': 1.50,
       'D': 1.00,
-      'E': 0.50,
-      'F': 0.00
+      'E': 0.00,
+      
     }[grade];
 
     const gradeBox = row.querySelector('.grade-box');
@@ -110,8 +110,8 @@ function calculateSemesterGPA(button) {
           'C': 2.00,
           'D+': 1.50,
           'D': 1.00,
-          'E': 0.50,
-          'F': 0.00
+          'E': 0.00,
+          
         }[grade];
 
         overallPoints += point * credit;
