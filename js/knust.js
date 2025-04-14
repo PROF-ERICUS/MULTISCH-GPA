@@ -12,9 +12,9 @@ function getGrade(marks) {
   
   function classifyGPA(gpa) {
     if (gpa >= 3.60) return 'First Class';
-    if (gpa >= 3.00) return 'Second Class Upper';
-    if (gpa >= 2.50) return 'Second Class Lower';
-    if (gpa >= 2.00) return 'Pass';
+    if (gpa >= 3.00) return 'Second Class Upper Division';
+    if (gpa >= 2.00) return 'Second Class Lower Division';
+    if (gpa >= 1.00) return 'Pass';
     return 'Fail';
   }
   
@@ -57,7 +57,7 @@ function getGrade(marks) {
       'A': 4.00,
       'B': 3.00,
       'C': 2.00,
-      'D': 1.50,
+      'D': 1.00,
       'F': 0.00
     }[grade];
 
@@ -96,7 +96,7 @@ function getGrade(marks) {
       'A': 4.00,
       'B': 3.00,
       'C': 2.00,
-      'D': 1.50,
+      'D': 1.00,
       'F': 0.00
         }[grade];
 
