@@ -183,7 +183,7 @@ function getGrade(marks) {
     let printContent = `
       <div style="text-align:center;">
         <img src="knust.jpg" width="100" />
-        <h2>Kwame Nkrumah University of Science and Technology - GPA Report</h2>
+        <h2>Kwame Nkrumah University of Science and Technology -CWA/ GPA Report</h2>
       </div>
     `;
   
