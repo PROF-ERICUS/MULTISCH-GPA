@@ -6,132 +6,128 @@ function getGrade(marks) {
   if (marks >= 60) return 'C';
   if (marks >= 55) return 'D+';
   if (marks >= 50) return 'D';
-  if (marks >= 45) return 'E';
-  return 'F';
   
+  return 'E';
 }
 
 function classifyGPA(gpa) {
   if (gpa >= 3.60) return 'First Class';
   if (gpa >= 3.00) return 'Second Class Upper Division';
   if (gpa >= 2.00) return 'Second Class Lower Division';
+  if (gpa >= 1.50) return 'Third Class';
   if (gpa >= 1.00) return 'Pass';
   return 'Fail';
 }
 
 let totalGpaPoints = 0;
 let totalCredits = 0;
-let totalCwaMarks = 0;
 
 function addCourse(button) {
   const courseInputs = button.previousElementSibling;
   const row = document.createElement('div');
   row.className = 'courseRow';
   row.innerHTML = `
-    <input type="text" placeholder="Course Name">
-    <input type="number" placeholder="Credit Hours" min="1">
-    <input type="number" placeholder="Marks (0-100)" min="0" max="100">
+    <input type="text" placeholder="Course Name" required>
+    <input type="number" placeholder="Credit Hours" min="1" required>
+    <input type="number" placeholder="Marks (0-100)" min="0" max="100" required>
     <span class="grade-box"></span>
   `;
   courseInputs.appendChild(row);
 }
 
 function calculateSemesterGPA(button) {
-  const semesterSection = button.closest('.semesterSection');
-  const courseRows = semesterSection.querySelectorAll('.courseRow');
+const semesterSection = button.closest('.semesterSection');
+const courseRows = semesterSection.querySelectorAll('.courseRow');
 
-  let semesterPoints = 0;
-  let semesterCredits = 0;
-  let semesterCwaMarks = 0;
-  let incompleteCourses = 0;
+let semesterPoints = 0;
+let semesterCredits = 0;
+let incompleteCourses = 0;
 
-  courseRows.forEach(row => {
-    const inputs = row.querySelectorAll('input');
-    const credit = parseFloat(inputs[1].value);
-    const marks = parseFloat(inputs[2].value);
+courseRows.forEach(row => {
+  const inputs = row.querySelectorAll('input');
+  const credit = parseFloat(inputs[1].value);
+  const marks = parseFloat(inputs[2].value);
 
-    if (isNaN(credit) || isNaN(marks)) {
-      incompleteCourses++;
-      return;
-    }
+  // If credit or marks are missing, count it as incomplete and skip
+  if (isNaN(credit) || isNaN(marks)) {
+    incompleteCourses++;
+    return;
+  }
 
-    const grade = getGrade(marks);
-    const point = {
-     'A': 4.00,
-  'B+': 3.50,
-  'B': 3.00,
-  'C+': 2.50,
-  'C': 2.00,
-  'D+': 1.50,
-  'D': 1.00,
-  'E': 0.50,
-  'F': 0.00
-    }[grade];
+  const grade = getGrade(marks);
+  const point = {
+    'A': 4.00,
+    'B+': 3.50,
+    
+    'B': 3.00,
+    'C+': 2.50,
+    'C': 2.00,
+    'D+': 1.50,
+    'D': 1.00,
+    'E': 0.00,
+    
+  }[grade];
 
-    const gradeBox = row.querySelector('.grade-box');
-    gradeBox.innerText = grade;
-    gradeBox.style.background = point >= 3.0 ? '#d4edda' : point >= 2.0 ? '#fff3cd' : '#f8d7da';
-    gradeBox.style.color = '#333';
+  const gradeBox = row.querySelector('.grade-box');
+  gradeBox.innerText = grade;
+  gradeBox.style.background = point >= 3.0 ? '#d4edda' : point >= 2.0 ? '#fff3cd' : '#f8d7da';
+  gradeBox.style.color = '#333';
 
-    semesterPoints += point * credit;
-    semesterCredits += credit;
-    semesterCwaMarks += marks * credit;
+  semesterPoints += point * credit;
+  semesterCredits += credit;
+});
+
+const semesterResult = semesterSection.querySelector('.semesterResult');
+
+if (semesterCredits > 0) {
+  const gpa = (semesterPoints / semesterCredits).toFixed(2);
+  const classLabel = classifyGPA(gpa);
+  semesterResult.innerText = `Semester GPA: ${gpa} (Total Credits: ${semesterCredits}) - Class: ${classLabel}`;
+
+  // Recalculate CGPA from scratch
+  const allSemesterSections = document.querySelectorAll('.semesterSection');
+  let overallPoints = 0;
+  let overallCredits = 0;
+
+  allSemesterSections.forEach(section => {
+    const rows = section.querySelectorAll('.courseRow');
+    rows.forEach(row => {
+      const inputs = row.querySelectorAll('input');
+      const credit = parseFloat(inputs[1].value);
+      const marks = parseFloat(inputs[2].value);
+
+      if (isNaN(credit) || isNaN(marks)) return;
+
+      const grade = getGrade(marks);
+      const point = {
+   'A': 4.00,
+    'B+': 3.50,
+    
+    'B': 3.00,
+    'C+': 2.50,
+    'C': 2.00,
+    'D+': 1.50,
+    'D': 1.00,
+    'E': 0.00,
+      }[grade];
+
+      overallPoints += point * credit;
+      overallCredits += credit;
+    });
   });
 
-  const semesterResult = semesterSection.querySelector('.semesterResult');
+  const cgpa = (overallPoints / overallCredits).toFixed(2);
+  const cgpaClassLabel = classifyGPA(cgpa);
+  document.getElementById('cgpaResult').innerText = `CGPA: ${cgpa} (Total Credits: ${overallCredits}) - Class: ${cgpaClassLabel}`;
 
-  if (semesterCredits > 0) {
-    const gpa = (semesterPoints / semesterCredits).toFixed(2);
-    const cwa = (semesterCwaMarks / semesterCredits).toFixed(2);
-    const classLabel = classifyGPA(gpa);
-    semesterResult.innerText = `Semester GPA: ${gpa}, CWA: ${cwa} (Total Credits: ${semesterCredits}) - Class: ${classLabel}`;
-
-    const allSemesterSections = document.querySelectorAll('.semesterSection');
-    let overallPoints = 0;
-    let overallCredits = 0;
-    let overallCwaMarks = 0;
-
-    allSemesterSections.forEach(section => {
-      const rows = section.querySelectorAll('.courseRow');
-      rows.forEach(row => {
-        const inputs = row.querySelectorAll('input');
-        const credit = parseFloat(inputs[1].value);
-        const marks = parseFloat(inputs[2].value);
-
-        if (isNaN(credit) || isNaN(marks)) return;
-
-        const grade = getGrade(marks);
-        const point = {
-         'A': 4.00,
-  'B+': 3.50,
-  'B': 3.00,
-  'C+': 2.50,
-  'C': 2.00,
-  'D+': 1.50,
-  'D': 1.00,
-  'E': 0.50,
-  'F': 0.00
-        }[grade];
-
-        overallPoints += point * credit;
-        overallCredits += credit;
-        overallCwaMarks += marks * credit;
-      });
-    });
-
-    const cgpa = (overallPoints / overallCredits).toFixed(2);
-    const cwaOverall = (overallCwaMarks / overallCredits).toFixed(2);
-    const cgpaClassLabel = classifyGPA(cgpa);
-    document.getElementById('cgpaResult').innerText = `CGPA: ${cgpa}, CWA: ${cwaOverall} (Total Credits: ${overallCredits}) - Class: ${cgpaClassLabel}`;
-
-    if (incompleteCourses > 0) {
-      alert(`GPA calculated. Add credit hours and marks for the remaining ${incompleteCourses} course(s).`);
-    }
-  } else {
-    semesterResult.innerText = 'Please enter at least one valid course with credit hours and marks.';
+  // Show alert if any course rows are incomplete
+  if (incompleteCourses > 0) {
+    alert(`GPA calculated. Add credit hours and marks for the remaining ${incompleteCourses} course(s).`);
   }
+} else {
+  semesterResult.innerText = 'Please enter at least one valid course with credit hours and marks.';
 }
-
+}
 function addSemester() {
   const semesterInputs = document.getElementById('semesterInputs');
   const semesterCount = semesterInputs.getElementsByClassName('semesterSection').length + 1;
@@ -142,9 +138,9 @@ function addSemester() {
     <h4>Semester ${semesterCount}</h4>
     <div class="courseInputs">
       <div class="courseRow">
-        <input type="text" placeholder="Course Name">
-        <input type="number" placeholder="Credit Hours" min="1">
-        <input type="number" placeholder="Marks (0-100)" min="0" max="100">
+        <input type="text" placeholder="Course Name" required>
+        <input type="number" placeholder="Credit Hours" min="1" required>
+        <input type="number" placeholder="Marks (0-100)" min="0" max="100" required>
         <span class="grade-box"></span>
       </div>
     </div>
@@ -166,9 +162,10 @@ function resetForm() {
   document.getElementById('cgpaResult').innerText = '';
   totalGpaPoints = 0;
   totalCredits = 0;
-  totalCwaMarks = 0;
   addSemester();
 }
+
+
 
 function closePopup() {
   document.getElementById('popup').style.display = 'none';
@@ -195,8 +192,8 @@ document.getElementById('modeToggle').addEventListener('change', function () {
 function printResults() {
   let printContent = `
     <div style="text-align:center;">
-      <img src="ucc logo.jpg" width="100" />
-      <h2> University of Cape Coast - GPA Report</h2>
+      <img src="legon logo.jpg" width="100" />
+      <h2>University of Ghana-Legon  - GPA Report</h2>
     </div>
   `;
 
@@ -204,13 +201,13 @@ function printResults() {
   let summaryTable = `
     <h3>Semester Summary</h3>
     <table border="1" cellspacing="0" cellpadding="8" width="100%">
-      <tr><th>Semester</th><th>GPA</th><th>CWA</th><th>Credits</th><th>Class</th></tr>
+      <tr><th>Semester</th><th>GPA</th><th>Credits</th><th>Class</th></tr>
   `;
 
   semesters.forEach((semester, index) => {
     const semesterTitle = `Semester ${index + 1}`;
     const semesterResult = semester.querySelector('.semesterResult').innerText;
-    const gpaMatch = semesterResult.match(/GPA: ([\d.]+), CWA: ([\d.]+).*?Credits: (\d+).*?Class: (.+)/i);
+    const gpaMatch = semesterResult.match(/GPA: ([\d.]+).*?Credits: (\d+).*?Class: (.+)/i);
 
     if (gpaMatch) {
       summaryTable += `<tr>
@@ -218,7 +215,6 @@ function printResults() {
         <td>${gpaMatch[1]}</td>
         <td>${gpaMatch[2]}</td>
         <td>${gpaMatch[3]}</td>
-        <td>${gpaMatch[4]}</td>
       </tr>`;
     }
   });
@@ -275,3 +271,4 @@ function printResults() {
   printWindow.focus();
   printWindow.print();
 }
+
