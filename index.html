@@ -162,15 +162,41 @@
 
   <section class="donate-section">
     <h2>Support Our Work</h2>
-    <p>You can support this project via Mobile Money:</p>
-    <ul>
-      <li><strong>MTN Number:</strong> 0542044490</li>
-      <li><strong>Name:</strong> Eric Andoh</li>
-    </ul>
-    <p>After sending, kindly confirm via WhatsApp below:</p>
-    <a href="https://wa.me/233542044490?text=Hi,%20I%20just%20sent%20my%20support%20via%20MoMo" class="whatsapp-button">
-      Confirm on WhatsApp
-    </a>
+    <p>Your support helps us keep this GPA calculator free and running smoothly.</p>
+    <input type="number" id="amount" placeholder="Enter amount (GHS)">
+    <button onclick="payWithPaystack()">Donate Now</button>
   </section>
+  
+  <script src="https://js.paystack.co/v1/inline.js"></script>
+  <script>
+    function payWithPaystack() {
+      let amount = document.getElementById("amount").value;
+  
+      if (!amount || isNaN(amount) || amount <= 0) {
+        alert("Please enter a valid donation amount.");
+        return;
+      }
+  
+      // Generate a random dummy email (Paystack needs an email)
+      let dummyEmail = `user${Date.now()}@example.com`;
+  
+      var handler = PaystackPop.setup({
+        key: 'pk_live_a041630bf628bdf36bca3d2dcae2c309ce6216c1', // Replace with your real key
+        email: dummyEmail,
+        amount: amount * 100, // Convert to pesewas
+        currency: "GHS",
+        callback: function(response) {
+          alert("Thank you for your support!");
+        },
+        onClose: function() {
+          alert("Donation process cancelled.");
+        }
+      });
+      handler.openIframe();
+    }
+  </script>
+  
+  
+  
 </body>
 </html>
