@@ -1,5 +1,5 @@
 function getGrade(marks) {
-    if (marks >= 80) return 'A';
+  if (marks >= 80) return 'A';
     
     if (marks >= 75) return 'B+';
     if (marks >= 70) return 'B';
@@ -11,34 +11,34 @@ function getGrade(marks) {
     if (marks >= 45) return 'E';
 
     return 'F';
-  }
-  
-  function classifyGPA(gpa) {
-    if (gpa >= 3.60) return 'First Class';
+}
+
+function classifyGPA(gpa) {
+  if (gpa >= 3.60) return 'First Class';
     if (gpa >= 3.00) return 'Second Class Upper Division';
     if (gpa >= 2.00) return 'Second Class Lower Division';
     if (gpa >= 1.50) return 'Third Class';
     if (gpa >= 1.00) return 'Pass';
     return 'Fail';
-  }
-  
-  let totalGpaPoints = 0;
-  let totalCredits = 0;
-  
-  function addCourse(button) {
-    const courseInputs = button.previousElementSibling;
-    const row = document.createElement('div');
-    row.className = 'courseRow';
-    row.innerHTML = `
-      <input type="text" placeholder="Course Name" required>
-      <input type="number" placeholder="Credit Hours" min="1" required>
-      <input type="number" placeholder="Marks (0-100)" min="0" max="100" required>
-      <span class="grade-box"></span>
-    `;
-    courseInputs.appendChild(row);
-  }
-  
- function calculateSemesterGPA(button) {
+}
+
+let totalGpaPoints = 0;
+let totalCredits = 0;
+
+function addCourse(button) {
+  const courseInputs = button.previousElementSibling;
+  const row = document.createElement('div');
+  row.className = 'courseRow';
+  row.innerHTML = `
+    <input type="text" placeholder="Course Name" required>
+    <input type="number" placeholder="Credit Hours" min="1" required>
+    <input type="number" placeholder="Marks (0-100)" min="0" max="100" required>
+    <span class="grade-box"></span>
+  `;
+  courseInputs.appendChild(row);
+}
+
+function calculateSemesterGPA(button) {
   const semesterSection = button.closest('.semesterSection');
   const courseRows = semesterSection.querySelectorAll('.courseRow');
 
@@ -51,7 +51,6 @@ function getGrade(marks) {
     const credit = parseFloat(inputs[1].value);
     const marks = parseFloat(inputs[2].value);
 
-    // If credit or marks are missing, count it as incomplete and skip
     if (isNaN(credit) || isNaN(marks)) {
       incompleteCourses++;
       return;
@@ -86,10 +85,10 @@ function getGrade(marks) {
     const classLabel = classifyGPA(gpa);
     semesterResult.innerText = `Semester GPA: ${gpa} (Total Credits: ${semesterCredits}) - Class: ${classLabel}`;
 
-    // Recalculate CGPA from scratch
-    const allSemesterSections = document.querySelectorAll('.semesterSection');
+    // Recalculate CGPA
     let overallPoints = 0;
     let overallCredits = 0;
+    const allSemesterSections = document.querySelectorAll('.semesterSection');
 
     allSemesterSections.forEach(section => {
       const rows = section.querySelectorAll('.courseRow');
@@ -97,7 +96,6 @@ function getGrade(marks) {
         const inputs = row.querySelectorAll('input');
         const credit = parseFloat(inputs[1].value);
         const marks = parseFloat(inputs[2].value);
-
         if (isNaN(credit) || isNaN(marks)) return;
 
         const grade = getGrade(marks);
@@ -122,7 +120,6 @@ function getGrade(marks) {
     const cgpaClassLabel = classifyGPA(cgpa);
     document.getElementById('cgpaResult').innerText = `CGPA: ${cgpa} (Total Credits: ${overallCredits}) - Class: ${cgpaClassLabel}`;
 
-    // Show alert if any course rows are incomplete
     if (incompleteCourses > 0) {
       alert(`GPA calculated. Add credit hours and marks for the remaining ${incompleteCourses} course(s).`);
     }
@@ -131,72 +128,69 @@ function getGrade(marks) {
   }
 }
 
-  function addSemester() {
-    const semesterInputs = document.getElementById('semesterInputs');
-    const semesterCount = semesterInputs.getElementsByClassName('semesterSection').length + 1;
-  
-    const semesterSection = document.createElement('div');
-    semesterSection.className = 'semesterSection';
-    semesterSection.innerHTML = `
-      <h4>Semester ${semesterCount}</h4>
-      <div class="courseInputs">
-        <div class="courseRow">
-          <input type="text" placeholder="Course Name" required>
-          <input type="number" placeholder="Credit Hours" min="1" required>
-          <input type="number" placeholder="Marks (0-100)" min="0" max="100" required>
-          <span class="grade-box"></span>
-        </div>
+function addSemester() {
+  const semesterInputs = document.getElementById('semesterInputs');
+  const semesterCount = semesterInputs.getElementsByClassName('semesterSection').length + 1;
+
+  const semesterSection = document.createElement('div');
+  semesterSection.className = 'semesterSection';
+  semesterSection.innerHTML = `
+    <h4>Semester ${semesterCount}</h4>
+    <div class="courseInputs">
+      <div class="courseRow">
+        <input type="text" placeholder="Course Name" required>
+        <input type="number" placeholder="Credit Hours" min="1" required>
+        <input type="number" placeholder="Marks (0-100)" min="0" max="100" required>
+        <span class="grade-box"></span>
       </div>
-      <button type="button" onclick="addCourse(this)">Add Course</button>
-      <button type="button" onclick="calculateSemesterGPA(this)">Calculate Semester GPA</button>
-      <div class="semesterResult"></div>
-    `;
-    semesterInputs.appendChild(semesterSection);
-  }
-  
-  function calculateCGPA() {
-    const cgpa = (totalGpaPoints / totalCredits).toFixed(2);
-    const cgpaClassLabel = classifyGPA(cgpa);
-    document.getElementById('cgpaResult').innerText = `CGPA: ${cgpa} (Total Credits: ${totalCredits}) - Class: ${cgpaClassLabel}`;
-  }
-  
-  function resetForm() {
-    document.getElementById('semesterInputs').innerHTML = '';
-    document.getElementById('cgpaResult').innerText = '';
-    totalGpaPoints = 0;
-    totalCredits = 0;
-    addSemester();
-  }
+    </div>
+    <button type="button" onclick="addCourse(this)">Add Course</button>
+    <button type="button" onclick="calculateSemesterGPA(this)">Calculate Semester GPA</button>
+    <div class="semesterResult"></div>
+  `;
+  semesterInputs.appendChild(semesterSection);
+}
 
- 
-  
-  function closePopup() {
-    document.getElementById('popup').style.display = 'none';
-  }
-  
-  window.onload = function () {
-    setTimeout(() => {
-      document.getElementById('popup').style.display = 'flex';
-    }, 500);
-  
-    const darkModePreference = localStorage.getItem('darkMode') === 'true';
-    document.getElementById('modeToggle').checked = darkModePreference;
-    document.body.classList.toggle('dark', darkModePreference);
-  
-    addSemester();
-  };
-  
-  document.getElementById('modeToggle').addEventListener('change', function () {
-    const isDarkMode = this.checked;
-    document.body.classList.toggle('dark', isDarkMode);
-    localStorage.setItem('darkMode', isDarkMode);
-  });
+function calculateCGPA() {
+  const cgpa = (totalGpaPoints / totalCredits).toFixed(2);
+  const cgpaClassLabel = classifyGPA(cgpa);
+  document.getElementById('cgpaResult').innerText = `CGPA: ${cgpa} (Total Credits: ${totalCredits}) - Class: ${cgpaClassLabel}`;
+}
 
+function resetForm() {
+  document.getElementById('semesterInputs').innerHTML = '';
+  document.getElementById('cgpaResult').innerText = '';
+  totalGpaPoints = 0;
+  totalCredits = 0;
+  addSemester();
+}
+
+function closePopup() {
+  document.getElementById('popup').style.display = 'none';
+}
+
+window.onload = function () {
+  setTimeout(() => {
+    document.getElementById('popup').style.display = 'flex';
+  }, 500);
+
+  const darkModePreference = localStorage.getItem('darkMode') === 'true';
+  document.getElementById('modeToggle').checked = darkModePreference;
+  document.body.classList.toggle('dark', darkModePreference);
+
+  addSemester();
+};
+
+document.getElementById('modeToggle').addEventListener('change', function () {
+  const isDarkMode = this.checked;
+  document.body.classList.toggle('dark', isDarkMode);
+  localStorage.setItem('darkMode', isDarkMode);
+});
 
 function printResults() {
   let printContent = `
     <div style="text-align:center;">
-      <img src="legon logo.jpg" width="100" />
+     <img src="legon logo.jpg" width="100" />
       <h2>University of Ghana-Legon - GPA Report</h2>
     </div>
   `;
@@ -209,17 +203,17 @@ function printResults() {
   `;
 
   semesters.forEach((semester, index) => {
-    const semesterTitle = `Semester ${index + 1}`;
     const semesterResult = semester.querySelector('.semesterResult').innerText;
     const gpaMatch = semesterResult.match(/GPA: ([\d.]+).*?Credits: (\d+).*?Class: (.+)/i);
-
     if (gpaMatch) {
-      summaryTable += `<tr>
-        <td>${semesterTitle}</td>
-        <td>${gpaMatch[1]}</td>
-        <td>${gpaMatch[2]}</td>
-        <td>${gpaMatch[3]}</td>
-      </tr>`;
+      summaryTable += `
+        <tr>
+          <td>Semester ${index + 1}</td>
+          <td>${gpaMatch[1]}</td>
+          <td>${gpaMatch[2]}</td>
+          <td>${gpaMatch[3]}</td>
+        </tr>
+      `;
     }
   });
 
@@ -237,7 +231,6 @@ function printResults() {
           <th>Grade</th>
         </tr>
     `;
-
     const courseRows = semester.querySelectorAll('.courseRow');
     courseRows.forEach(row => {
       const inputs = row.querySelectorAll('input');
@@ -251,7 +244,6 @@ function printResults() {
         </tr>
       `;
     });
-
     const semesterResult = semester.querySelector('.semesterResult').innerText;
     printContent += `</table><p><strong>${semesterResult}</strong></p><br/>`;
   });
@@ -260,19 +252,17 @@ function printResults() {
   printContent += `<hr/><p><strong>${overallGPAInfo}</strong></p>`;
 
   const printWindow = window.open('', '', 'width=800,height=600');
-  printWindow.document.write(`<html><head><title>Print Results</title>
+  printWindow.document.write(`
+    <html><head><title>Print Results</title>
     <style>
       body { font-family: Arial, sans-serif; padding: 20px; }
       table { border-collapse: collapse; }
       th, td { border: 1px solid #999; text-align: center; }
       img { margin-bottom: 10px; }
-      @media print {
-        button { display: none; }
-      }
+      @media print { button { display: none; } }
     </style>
-  </head><body>${printContent}</body></html>`);
+    </head><body>${printContent}</body></html>
+  `);
   printWindow.document.close();
-  printWindow.focus();
   printWindow.print();
 }
-
