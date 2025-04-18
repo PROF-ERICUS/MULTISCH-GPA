@@ -120,9 +120,30 @@ function calculateSemesterGPA(button) {
     const cgpaClassLabel = classifyGPA(cgpa);
     document.getElementById('cgpaResult').innerText = `CGPA: ${cgpa} (Total Credits: ${overallCredits}) - Class: ${cgpaClassLabel}`;
 
+
+    
+      // Final GPA (FGPA) calculation based on UG levels (100, 200, 300, 400)
+      const cgpa100 = parseFloat(cgpa); // Assuming CGPA for level 100 is provided
+      const cgpa200 = parseFloat(cgpa); // Assuming CGPA for level 200 is provided
+      const cgpa300 = parseFloat(cgpa); // Assuming CGPA for level 300 is provided
+      const cgpa400 = parseFloat(cgpa); // Assuming CGPA for level 400 is provided
+  
+      // Final GPA based on UG weighting
+      const FGPA = ((cgpa100 * 1) + (cgpa200 * 1) + (cgpa300 * 2) + (cgpa400 * 2)) / 6;
+      // Determine final class based on FGPA
+      let finalClass = '';
+      if (FGPA >= 3.6) finalClass = 'First Class';
+      else if (FGPA >= 3.0) finalClass = 'Second Class Upper';
+      else if (FGPA >= 2.0) finalClass = 'Second Class Lower';
+      else if (FGPA >= 1.5) finalClass = 'Third Class';
+      else if (FGPA >= 1.0) finalClass = 'Pass';
+      else finalClass = 'Fail';
+
     if (incompleteCourses > 0) {
       alert(`GPA calculated. Add credit hours and marks for the remaining ${incompleteCourses} course(s).`);
     }
+     // Display FGPA and class
+     document.getElementById('fgpaResult').innerText = `FGPA: ${FGPA.toFixed(2)} - Class: ${finalClass}`;
   } else {
     semesterResult.innerText = 'Please enter at least one valid course with credit hours and marks.';
   }
