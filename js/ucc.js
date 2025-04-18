@@ -36,27 +36,26 @@ function addCourse(button) {
 }
 
 function calculateSemesterGPA(button) {
-const semesterSection = button.closest('.semesterSection');
-const courseRows = semesterSection.querySelectorAll('.courseRow');
+  const semesterSection = button.closest('.semesterSection');
+  const courseRows = semesterSection.querySelectorAll('.courseRow');
 
-let semesterPoints = 0;
-let semesterCredits = 0;
-let incompleteCourses = 0;
+  let semesterPoints = 0;
+  let semesterCredits = 0;
+  let incompleteCourses = 0;
 
-courseRows.forEach(row => {
-  const inputs = row.querySelectorAll('input');
-  const credit = parseFloat(inputs[1].value);
-  const marks = parseFloat(inputs[2].value);
+  courseRows.forEach(row => {
+    const inputs = row.querySelectorAll('input');
+    const credit = parseFloat(inputs[1].value);
+    const marks = parseFloat(inputs[2].value);
 
-  // If credit or marks are missing, count it as incomplete and skip
-  if (isNaN(credit) || isNaN(marks)) {
-    incompleteCourses++;
-    return;
-  }
+    if (isNaN(credit) || isNaN(marks)) {
+      incompleteCourses++;
+      return;
+    }
 
-  const grade = getGrade(marks);
-  const point = {
-    'A': 4.00,
+    const grade = getGrade(marks);
+    const point = {
+      'A': 4.00,
     'B+': 3.50,
     
     'B': 3.00,
@@ -65,69 +64,67 @@ courseRows.forEach(row => {
     'D+': 1.50,
     'D': 1.00,
     'E': 0.00,
-    
-  }[grade];
+    }[grade];
 
-  const gradeBox = row.querySelector('.grade-box');
-  gradeBox.innerText = grade;
-  gradeBox.style.background = point >= 3.0 ? '#d4edda' : point >= 2.0 ? '#fff3cd' : '#f8d7da';
-  gradeBox.style.color = '#333';
+    const gradeBox = row.querySelector('.grade-box');
+    gradeBox.innerText = grade;
+    gradeBox.style.background = point >= 3.0 ? '#d4edda' : point >= 2.0 ? '#fff3cd' : '#f8d7da';
+    gradeBox.style.color = '#333';
 
-  semesterPoints += point * credit;
-  semesterCredits += credit;
-});
-
-const semesterResult = semesterSection.querySelector('.semesterResult');
-
-if (semesterCredits > 0) {
-  const gpa = (semesterPoints / semesterCredits).toFixed(2);
-  const classLabel = classifyGPA(gpa);
-  semesterResult.innerText = `Semester GPA: ${gpa} (Total Credits: ${semesterCredits}) - Class: ${classLabel}`;
-
-  // Recalculate CGPA from scratch
-  const allSemesterSections = document.querySelectorAll('.semesterSection');
-  let overallPoints = 0;
-  let overallCredits = 0;
-
-  allSemesterSections.forEach(section => {
-    const rows = section.querySelectorAll('.courseRow');
-    rows.forEach(row => {
-      const inputs = row.querySelectorAll('input');
-      const credit = parseFloat(inputs[1].value);
-      const marks = parseFloat(inputs[2].value);
-
-      if (isNaN(credit) || isNaN(marks)) return;
-
-      const grade = getGrade(marks);
-      const point = {
-   'A': 4.00,
-    'B+': 3.50,
-    
-    'B': 3.00,
-    'C+': 2.50,
-    'C': 2.00,
-    'D+': 1.50,
-    'D': 1.00,
-    'E': 0.00,
-      }[grade];
-
-      overallPoints += point * credit;
-      overallCredits += credit;
-    });
+    semesterPoints += point * credit;
+    semesterCredits += credit;
   });
 
-  const cgpa = (overallPoints / overallCredits).toFixed(2);
-  const cgpaClassLabel = classifyGPA(cgpa);
-  document.getElementById('cgpaResult').innerText = `CGPA: ${cgpa} (Total Credits: ${overallCredits}) - Class: ${cgpaClassLabel}`;
+  const semesterResult = semesterSection.querySelector('.semesterResult');
 
-  // Show alert if any course rows are incomplete
-  if (incompleteCourses > 0) {
-    alert(`GPA calculated. Add credit hours and marks for the remaining ${incompleteCourses} course(s).`);
+  if (semesterCredits > 0) {
+    const gpa = (semesterPoints / semesterCredits).toFixed(2);
+    const classLabel = classifyGPA(gpa);
+    semesterResult.innerText = `Semester GPA: ${gpa} (Total Credits: ${semesterCredits}) - Class: ${classLabel}`;
+
+    // Recalculate CGPA
+    let overallPoints = 0;
+    let overallCredits = 0;
+    const allSemesterSections = document.querySelectorAll('.semesterSection');
+
+    allSemesterSections.forEach(section => {
+      const rows = section.querySelectorAll('.courseRow');
+      rows.forEach(row => {
+        const inputs = row.querySelectorAll('input');
+        const credit = parseFloat(inputs[1].value);
+        const marks = parseFloat(inputs[2].value);
+        if (isNaN(credit) || isNaN(marks)) return;
+
+        const grade = getGrade(marks);
+        const point = {
+          'A': 4.00,
+          'B+': 3.50,
+          
+          'B': 3.00,
+          'C+': 2.50,
+          'C': 2.00,
+          'D+': 1.50,
+          'D': 1.00,
+          'E': 0.00,
+        }[grade];
+
+        overallPoints += point * credit;
+        overallCredits += credit;
+      });
+    });
+
+    const cgpa = (overallPoints / overallCredits).toFixed(2);
+    const cgpaClassLabel = classifyGPA(cgpa);
+    document.getElementById('cgpaResult').innerText = `CGPA: ${cgpa} (Total Credits: ${overallCredits}) - Class: ${cgpaClassLabel}`;
+
+    if (incompleteCourses > 0) {
+      alert(`GPA calculated. Add credit hours and marks for the remaining ${incompleteCourses} course(s).`);
+    }
+  } else {
+    semesterResult.innerText = 'Please enter at least one valid course with credit hours and marks.';
   }
-} else {
-  semesterResult.innerText = 'Please enter at least one valid course with credit hours and marks.';
 }
-}
+
 function addSemester() {
   const semesterInputs = document.getElementById('semesterInputs');
   const semesterCount = semesterInputs.getElementsByClassName('semesterSection').length + 1;
@@ -165,8 +162,6 @@ function resetForm() {
   addSemester();
 }
 
-
-
 function closePopup() {
   document.getElementById('popup').style.display = 'none';
 }
@@ -192,7 +187,7 @@ document.getElementById('modeToggle').addEventListener('change', function () {
 function printResults() {
   let printContent = `
     <div style="text-align:center;">
-      <img src="legon logo.jpg" width="100" />
+     <img src="legon logo.jpg" width="100" />
       <h2>University of Ghana-Legon  - GPA Report</h2>
     </div>
   `;
@@ -205,17 +200,17 @@ function printResults() {
   `;
 
   semesters.forEach((semester, index) => {
-    const semesterTitle = `Semester ${index + 1}`;
     const semesterResult = semester.querySelector('.semesterResult').innerText;
     const gpaMatch = semesterResult.match(/GPA: ([\d.]+).*?Credits: (\d+).*?Class: (.+)/i);
-
     if (gpaMatch) {
-      summaryTable += `<tr>
-        <td>${semesterTitle}</td>
-        <td>${gpaMatch[1]}</td>
-        <td>${gpaMatch[2]}</td>
-        <td>${gpaMatch[3]}</td>
-      </tr>`;
+      summaryTable += `
+        <tr>
+          <td>Semester ${index + 1}</td>
+          <td>${gpaMatch[1]}</td>
+          <td>${gpaMatch[2]}</td>
+          <td>${gpaMatch[3]}</td>
+        </tr>
+      `;
     }
   });
 
@@ -233,7 +228,6 @@ function printResults() {
           <th>Grade</th>
         </tr>
     `;
-
     const courseRows = semester.querySelectorAll('.courseRow');
     courseRows.forEach(row => {
       const inputs = row.querySelectorAll('input');
@@ -247,7 +241,6 @@ function printResults() {
         </tr>
       `;
     });
-
     const semesterResult = semester.querySelector('.semesterResult').innerText;
     printContent += `</table><p><strong>${semesterResult}</strong></p><br/>`;
   });
@@ -256,19 +249,17 @@ function printResults() {
   printContent += `<hr/><p><strong>${overallGPAInfo}</strong></p>`;
 
   const printWindow = window.open('', '', 'width=800,height=600');
-  printWindow.document.write(`<html><head><title>Print Results</title>
+  printWindow.document.write(`
+    <html><head><title>Print Results</title>
     <style>
       body { font-family: Arial, sans-serif; padding: 20px; }
       table { border-collapse: collapse; }
       th, td { border: 1px solid #999; text-align: center; }
       img { margin-bottom: 10px; }
-      @media print {
-        button { display: none; }
-      }
+      @media print { button { display: none; } }
     </style>
-  </head><body>${printContent}</body></html>`);
+    </head><body>${printContent}</body></html>
+  `);
   printWindow.document.close();
-  printWindow.focus();
   printWindow.print();
 }
-
