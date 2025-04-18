@@ -171,6 +171,38 @@ document.getElementById('modeToggle').addEventListener('change', function () {
   localStorage.setItem('darkMode', isDarkMode);
 });
 
+function openCwaModal() {
+  document.getElementById('cwaModal').style.display = 'block';
+}
+
+function closeCwaModal() {
+  document.getElementById('cwaModal').style.display = 'none';
+}
+
+function convertToCwa() {
+  const valueType = document.getElementById('valueType').value;
+  const value = parseFloat(document.getElementById('valueInput').value);
+
+  if (isNaN(value)) {
+    document.getElementById('cwaResult').innerText = 'Please enter a valid number.';
+    return;
+  }
+
+  // Simple conversion formula — can be adjusted if needed
+  const cwa = value * 25;
+
+  document.getElementById('cwaResult').innerText = `Converted ${valueType.toUpperCase()} to CWA: ${cwa.toFixed(2)}`;
+}
+
+// Optional: close modal when clicking outside
+window.onclick = function(event) {
+  const modal = document.getElementById('cwaModal');
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+
+
 function printResults() {
   let printContent = `
     <div style="text-align:center;">
