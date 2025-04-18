@@ -56,14 +56,14 @@ function calculateSemesterGPA(button) {
     const grade = getGrade(marks);
     const point = {
       'A': 4.00,
-    'B+': 3.50,
-    
-    'B': 3.00,
-    'C+': 2.50,
-    'C': 2.00,
-    'D+': 1.50,
-    'D': 1.00,
-    'E': 0.00,
+      'B+': 3.50,
+      
+      'B': 3.00,
+      'C+': 2.50,
+      'C': 2.00,
+      'D+': 1.50,
+      'D': 1.00,
+      'E': 0.00,
     }[grade];
 
     const gradeBox = row.querySelector('.grade-box');
