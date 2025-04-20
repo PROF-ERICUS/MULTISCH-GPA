@@ -59,11 +59,12 @@ function updateGrade(input, semId) {
 
   calculateSemesterCWA(semId);
 }
-
 function calculateSemesterCWA(semId) {
   const rows = document.querySelectorAll(`#table-${semId} tr:not(:first-child)`);
   let totalWeighted = 0;
   let totalCredits = 0;
+  let totalMarks = 0;
+  let courseCount = 0;
 
   rows.forEach(row => {
     const credit = parseFloat(row.cells[1].querySelector("input")?.value || 0);
@@ -71,16 +72,25 @@ function calculateSemesterCWA(semId) {
     if (credit && !isNaN(mark)) {
       totalCredits += credit;
       totalWeighted += credit * mark;
+      totalMarks += mark;
+      courseCount++;
     }
   });
 
-  const semesterCWA = totalCredits ? (totalWeighted / totalCredits).toFixed(2) : 0;
+  const semesterCWA = totalCredits ? (totalWeighted / totalCredits).toFixed(2) : "0.00";
+  const semesterSWA = courseCount ? (totalMarks / courseCount).toFixed(2) : "0.00";
   const classRemark = getClassRemark(semesterCWA);
-  document.getElementById(`result-${semId}`).innerHTML =
-    `<strong>Semester ${semId} CWA:</strong> ${semesterCWA} (${classRemark})`;
+
+  document.getElementById(`result-${semId}`).innerHTML = `
+    <strong>Total Marks:</strong> ${totalWeighted.toFixed(2)}<br/>
+    <strong>Total Credit Hours:</strong> ${totalCredits}<br/>
+    <strong>Semester ${semId} SWA:</strong> ${semesterSWA}<br/> <!-- SWA comes first -->
+    <strong>Semester ${semId} CWA:</strong> ${semesterCWA} (${classRemark})
+  `;
 
   calculateCWA(); // Update overall automatically
 }
+
 
 function calculateCWA() {
   let totalWeighted = 0;
@@ -100,8 +110,12 @@ function calculateCWA() {
 
   const cwa = totalCredits ? (totalWeighted / totalCredits).toFixed(2) : 0;
   const classRemark = getClassRemark(cwa);
-  document.getElementById("overallCWA").innerHTML =
-    `<h3>Overall CWA: ${cwa} (${classRemark})</h3>`;
+
+  document.getElementById("overallCWA").innerHTML = `
+    <h3>Overall CWA: ${cwa} (${classRemark})</h3>
+    <p><strong>Total Marks:</strong> ${totalWeighted.toFixed(2)}</p>
+    <p><strong>Total Credit Hours:</strong> ${totalCredits}</p>
+  `;
 }
 
 function getClassRemark(cwa) {
@@ -118,17 +132,14 @@ function closePopup() {
 }
 
 window.onload = function () {
-
-}
   setTimeout(() => {
     document.getElementById('popup').style.display = 'flex';
   }, 500);
+
   const darkModePreference = localStorage.getItem('darkMode') === 'true';
   document.getElementById('modeToggle').checked = darkModePreference;
   document.body.classList.toggle('dark', darkModePreference);
-
-
-;
+};
 
 document.getElementById('modeToggle').addEventListener('change', function () {
   const isDarkMode = this.checked;
@@ -136,19 +147,15 @@ document.getElementById('modeToggle').addEventListener('change', function () {
   localStorage.setItem('darkMode', isDarkMode);
 });
 
-
 function resetCalculator() {
   document.getElementById("semesters").innerHTML = "";
   document.getElementById("overallCWA").innerHTML = "";
   semesterCount = 0;
 }
 
-
 function getSemesterIdFromTableId(tableId) {
   return parseInt(tableId.split("-")[1]);
 }
-
-
 
 function printResults() {
   let printContent = `
@@ -159,7 +166,7 @@ function printResults() {
     </div>
   `;
 
-  const semesters = document.querySelectorAll('.semesterSection');
+  const semesters = document.querySelectorAll('.semester');
   let summaryTable = `
     <h3>Semester Summary</h3>
     <table border="1" cellspacing="0" cellpadding="8" width="100%">
@@ -214,7 +221,7 @@ function printResults() {
     printContent += `</table><p><strong>${semesterResult}</strong></p><br/>`;
   });
 
-  const overallCWAInfo = document.getElementById('cgpaResult').innerText;
+  const overallCWAInfo = document.getElementById('overallCWA').innerText;
   printContent += `<hr/><p><strong>${overallCWAInfo}</strong></p>`;
 
   const printWindow = window.open('', '', 'width=800,height=600');
@@ -233,7 +240,3 @@ function printResults() {
   printWindow.document.close();
   printWindow.print();
 }
-
-
-
-
