@@ -78,13 +78,13 @@ function calculateSemesterCWA(semId) {
   });
 
   const semesterCWA = totalCredits ? (totalWeighted / totalCredits).toFixed(2) : "0.00";
-  const semesterSWA = courseCount ? (totalMarks / courseCount).toFixed(2) : "0.00";
+  const semesterSWA = totalCredits ? (totalWeighted / totalCredits).toFixed(2) : "0.00";
   const classRemark = getClassRemark(semesterCWA);
 
   document.getElementById(`result-${semId}`).innerHTML = `
     <strong>Total Marks:</strong> ${totalWeighted.toFixed(2)}<br/>
     <strong>Total Credit Hours:</strong> ${totalCredits}<br/>
-    <strong>Semester ${semId} SWA:</strong> ${semesterSWA}<br/> <!-- SWA comes first -->
+    <strong>Semester ${semId} Average:</strong> ${semesterSWA}<br/>
     <strong>Semester ${semId} CWA:</strong> ${semesterCWA} (${classRemark})
   `;
 
