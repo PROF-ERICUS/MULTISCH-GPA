@@ -19,9 +19,6 @@ function classifyGPA(gpa) {
   return 'Fail';
 }
 
-let totalGpaPoints = 0;
-let totalCredits = 0;
-
 function addCourse(button) {
   const courseInputs = button.previousElementSibling;
   const row = document.createElement('div');
@@ -55,16 +52,9 @@ function calculateSemesterGPA(button) {
 
     const grade = getGrade(marks);
     const point = {
-      'A': 4.00,
-      'A-': 3.75,
-      'B+': 3.50,
-      'B': 3.25,
-      'B-': 3.00,
-      'C+': 2.75,
-      'C': 2.50,
-      'C-': 2.00,
-      'D': 1.50,
-      'F': 0.00
+      'A': 4.00, 'A-': 3.75, 'B+': 3.50, 'B': 3.25,
+      'B-': 3.00, 'C+': 2.75, 'C': 2.50, 'C-': 2.00,
+      'D': 1.50, 'F': 0.00
     }[grade];
 
     const gradeBox = row.querySelector('.grade-box');
@@ -77,19 +67,20 @@ function calculateSemesterGPA(button) {
   });
 
   const semesterResult = semesterSection.querySelector('.semesterResult');
+  const cumulativeResult = semesterSection.querySelector('.cumulativeCGPA');
 
   if (semesterCredits > 0) {
-    const gpa = (semesterPoints / semesterCredits).toFixed(2);
-    const classLabel = classifyGPA(gpa);
-    semesterResult.innerText = `Semester GPA: ${gpa} (Total Credits: ${semesterCredits}) - Class: ${classLabel}`;
+    const semesterGPA = (semesterPoints / semesterCredits).toFixed(2);
+    const semesterClass = classifyGPA(semesterGPA);
+    semesterResult.innerText = `Semester GPA: ${semesterGPA} (Total Credits: ${semesterCredits}) - Class: ${semesterClass}`;
 
-    // Recalculate CGPA
-    let overallPoints = 0;
-    let overallCredits = 0;
-    const allSemesterSections = document.querySelectorAll('.semesterSection');
+    // Calculate cumulative up to this semester
+    let cumulativePoints = 0;
+    let cumulativeCredits = 0;
+    const allSections = document.querySelectorAll('.semesterSection');
 
-    allSemesterSections.forEach(section => {
-      const rows = section.querySelectorAll('.courseRow');
+    for (let i = 0; i <= Array.from(allSections).indexOf(semesterSection); i++) {
+      const rows = allSections[i].querySelectorAll('.courseRow');
       rows.forEach(row => {
         const inputs = row.querySelectorAll('input');
         const credit = parseFloat(inputs[1].value);
@@ -98,26 +89,21 @@ function calculateSemesterGPA(button) {
 
         const grade = getGrade(marks);
         const point = {
-          'A': 4.00,
-          'A-': 3.75,
-          'B+': 3.50,
-          'B': 3.25,
-          'B-': 3.00,
-          'C+': 2.75,
-          'C': 2.50,
-          'C-': 2.00,
-          'D': 1.50,
-          'F': 0.00
+          'A': 4.00, 'A-': 3.75, 'B+': 3.50, 'B': 3.25,
+          'B-': 3.00, 'C+': 2.75, 'C': 2.50, 'C-': 2.00,
+          'D': 1.50, 'F': 0.00
         }[grade];
 
-        overallPoints += point * credit;
-        overallCredits += credit;
+        cumulativePoints += point * credit;
+        cumulativeCredits += credit;
       });
-    });
+    }
 
-    const cgpa = (overallPoints / overallCredits).toFixed(2);
-    const cgpaClassLabel = classifyGPA(cgpa);
-    document.getElementById('cgpaResult').innerText = `CGPA: ${cgpa} (Total Credits: ${overallCredits}) - Class: ${cgpaClassLabel}`;
+    const cgpa = (cumulativePoints / cumulativeCredits).toFixed(2);
+    const cgpaClass = classifyGPA(cgpa);
+    cumulativeResult.innerText = `Cumulative CGPA: ${cgpa} (Credits: ${cumulativeCredits}) - Class: ${cgpaClass}`;
+
+    updateMainCGPA();
 
     if (incompleteCourses > 0) {
       alert(`GPA calculated. Add credit hours and marks for the remaining ${incompleteCourses} course(s).`);
@@ -125,6 +111,36 @@ function calculateSemesterGPA(button) {
   } else {
     semesterResult.innerText = 'Please enter at least one valid course with credit hours and marks.';
   }
+}
+
+function updateMainCGPA() {
+  let totalPoints = 0;
+  let totalCredits = 0;
+
+  const allSections = document.querySelectorAll('.semesterSection');
+  allSections.forEach(section => {
+    const rows = section.querySelectorAll('.courseRow');
+    rows.forEach(row => {
+      const inputs = row.querySelectorAll('input');
+      const credit = parseFloat(inputs[1].value);
+      const marks = parseFloat(inputs[2].value);
+      if (isNaN(credit) || isNaN(marks)) return;
+
+      const grade = getGrade(marks);
+      const point = {
+        'A': 4.00, 'A-': 3.75, 'B+': 3.50, 'B': 3.25,
+        'B-': 3.00, 'C+': 2.75, 'C': 2.50, 'C-': 2.00,
+        'D': 1.50, 'F': 0.00
+      }[grade];
+
+      totalPoints += point * credit;
+      totalCredits += credit;
+    });
+  });
+
+  const cgpa = (totalPoints / totalCredits).toFixed(2);
+  const cgpaClass = classifyGPA(cgpa);
+  document.getElementById('cgpaResult').innerText = `CGPA: ${cgpa} (Total Credits: ${totalCredits}) - Class: ${cgpaClass}`;
 }
 
 function addSemester() {
@@ -146,21 +162,14 @@ function addSemester() {
     <button type="button" onclick="addCourse(this)">Add Course</button>
     <button type="button" onclick="calculateSemesterGPA(this)">Calculate Semester GPA</button>
     <div class="semesterResult"></div>
+    <div class="cumulativeCGPA"></div>
   `;
   semesterInputs.appendChild(semesterSection);
-}
-
-function calculateCGPA() {
-  const cgpa = (totalGpaPoints / totalCredits).toFixed(2);
-  const cgpaClassLabel = classifyGPA(cgpa);
-  document.getElementById('cgpaResult').innerText = `CGPA: ${cgpa} (Total Credits: ${totalCredits}) - Class: ${cgpaClassLabel}`;
 }
 
 function resetForm() {
   document.getElementById('semesterInputs').innerHTML = '';
   document.getElementById('cgpaResult').innerText = '';
-  totalGpaPoints = 0;
-  totalCredits = 0;
   addSemester();
 }
 
@@ -185,6 +194,7 @@ document.getElementById('modeToggle').addEventListener('change', function () {
   document.body.classList.toggle('dark', isDarkMode);
   localStorage.setItem('darkMode', isDarkMode);
 });
+
 
 function printResults() {
   let printContent = `
