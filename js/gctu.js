@@ -16,6 +16,7 @@ function classifyGPA(gpa) {
   if (gpa >= 3.00) return 'Second Class Honours Upper';
   if (gpa >= 2.50) return 'Second Class Honours Lower';
   if (gpa >= 2.00) return 'Third Class Honours';
+  if (gpa >= 1.50) return 'Pass';
   return 'Fail';
 }
 
