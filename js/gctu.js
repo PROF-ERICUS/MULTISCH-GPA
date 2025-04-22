@@ -49,6 +49,13 @@ function calculateSemesterGPA(button) {
       incompleteCourses++;
       return;
     }
+    
+    if (marks < 0 || marks > 100 || credit <= 0) {
+      alert('Please enter valid marks (0–100) and credit hours greater than 0.');
+      incompleteCourses++;
+      return;
+    }
+    
 
     const grade = getGrade(marks);
     const point = {
@@ -205,30 +212,61 @@ function printResults() {
   `;
 
   const semesters = document.querySelectorAll('.semesterSection');
+
   let summaryTable = `
     <h3>Semester Summary</h3>
     <table border="1" cellspacing="0" cellpadding="8" width="100%">
-      <tr><th>Semester</th><th>GPA</th><th>Credits</th><th>Class</th></tr>
+      <tr>
+        <th>Semester</th>
+        <th>Course Names</th>
+        <th>Total Credit Hours</th>
+        <th>Semester GPA</th>
+        <th>Cumulative CGPA</th>
+        <th>Class</th>
+      </tr>
   `;
 
   semesters.forEach((semester, index) => {
-    const semesterResult = semester.querySelector('.semesterResult').innerText;
-    const gpaMatch = semesterResult.match(/GPA: ([\d.]+).*?Credits: (\d+).*?Class: (.+)/i);
-    if (gpaMatch) {
-      summaryTable += `
-        <tr>
-          <td>Semester ${index + 1}</td>
-          <td>${gpaMatch[1]}</td>
-          <td>${gpaMatch[2]}</td>
-          <td>${gpaMatch[3]}</td>
-        </tr>
-      `;
-    }
+    const courseRows = semester.querySelectorAll('.courseRow');
+    let courseNames = [];
+    let totalCredits = 0;
+
+    courseRows.forEach(row => {
+      const inputs = row.querySelectorAll('input');
+      const courseName = inputs[0]?.value || '';
+      const credit = parseFloat(inputs[1]?.value) || 0;
+
+      if (courseName) courseNames.push(courseName);
+      totalCredits += credit;
+    });
+
+    const semesterResultText = semester.querySelector('.semesterResult')?.innerText || '';
+    const cumulativeResultText = semester.querySelector('.cumulativeCGPA')?.innerText || '';
+
+    const gpaMatch = semesterResultText.match(/GPA:\s*([\d.]+)/i);
+    const cgpaMatch = cumulativeResultText.match(/CGPA:\s*([\d.]+)/i);
+    const classMatch = cumulativeResultText.match(/Class:\s*(.+)/i);
+
+    const gpa = gpaMatch ? gpaMatch[1] : '-';
+    const cgpa = cgpaMatch ? cgpaMatch[1] : '-';
+    const className = classMatch ? classMatch[1] : '-';
+
+    summaryTable += `
+      <tr>
+        <td>Semester ${index + 1}</td>
+        <td>${courseNames.join(', ')}</td>
+        <td>${totalCredits}</td>
+        <td>${gpa}</td>
+        <td>${cgpa}</td>
+        <td>${className}</td>
+      </tr>
+    `;
   });
 
   summaryTable += '</table><br/>';
   printContent += summaryTable;
 
+  // Print detailed course info per semester
   semesters.forEach((semester, index) => {
     printContent += `<h3>Semester ${index + 1}</h3>`;
     printContent += `
@@ -240,20 +278,22 @@ function printResults() {
           <th>Grade</th>
         </tr>
     `;
+
     const courseRows = semester.querySelectorAll('.courseRow');
     courseRows.forEach(row => {
       const inputs = row.querySelectorAll('input');
-      const grade = row.querySelector('.grade-box').innerText;
+      const grade = row.querySelector('.grade-box').innerText || '-';
       printContent += `
         <tr>
-          <td>${inputs[0].value}</td>
-          <td>${inputs[1].value}</td>
-          <td>${inputs[2].value}</td>
+          <td>${inputs[0]?.value || ''}</td>
+          <td>${inputs[1]?.value || ''}</td>
+          <td>${inputs[2]?.value || ''}</td>
           <td>${grade}</td>
         </tr>
       `;
     });
-    const semesterResult = semester.querySelector('.semesterResult').innerText;
+
+    const semesterResult = semester.querySelector('.semesterResult')?.innerText || '';
     printContent += `</table><p><strong>${semesterResult}</strong></p><br/>`;
   });
 
@@ -265,8 +305,8 @@ function printResults() {
     <html><head><title>Print Results</title>
     <style>
       body { font-family: Arial, sans-serif; padding: 20px; }
-      table { border-collapse: collapse; }
-      th, td { border: 1px solid #999; text-align: center; }
+      table { border-collapse: collapse; width: 100%; }
+      th, td { border: 1px solid #999; text-align: center; padding: 8px; }
       img { margin-bottom: 10px; }
       @media print { button { display: none; } }
     </style>
@@ -275,3 +315,4 @@ function printResults() {
   printWindow.document.close();
   printWindow.print();
 }
+
