@@ -126,7 +126,7 @@ function getClassRemark(cwa) {
   if (cwa >= 70) return "First Class";
   else if (cwa >= 60) return "Second Class Upper";
   else if (cwa >= 50) return "Second Class Lower";
-  else if (cwa >= 40) return "Third Class";
+  else if (cwa >= 45) return "Pass";
   else return "Fail";
 }
 
