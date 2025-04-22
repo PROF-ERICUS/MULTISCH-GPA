@@ -224,7 +224,7 @@ document.getElementById('modeToggle').addEventListener('change', function () {
 function printResults() {
   let printContent = `
     <div style="text-align:center;">
-      <img src="gctu logo.jpg" width="100" />
+      <img src="ucc logo.jpg" width="100" />
       <h2>University of Cape Coast - GPA Report</h2>
     </div>
   `;
