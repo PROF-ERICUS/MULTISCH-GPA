@@ -38,9 +38,12 @@ function addCourse(semId) {
 
 function removeRow(btn) {
   const row = btn.parentElement.parentElement;
+  const semId = getSemesterIdFromTableId(row.closest("table").id);
   row.parentElement.removeChild(row);
-  calculateSemesterCWA(getSemesterIdFromTableId(row.closest("table").id));
+  calculateSemesterCWA(semId);
+  calculateCWA(); // 👈 recalculate overall after row is removed
 }
+
 
 function updateGrade(input, semId) {
   const mark = parseFloat(input.value);
