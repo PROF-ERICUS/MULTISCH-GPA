@@ -53,7 +53,13 @@ function calculateSemesterGPA(button) {
         incompleteCourses++;
         return;
       }
-  
+      
+      if (marks < 0 || marks > 100 || credit <= 0) {
+        alert('Please enter valid marks (0–100) and credit hours greater than 0.');
+        incompleteCourses++;
+        return;
+      }
+      
       const grade = getGrade(marks);
       const point = {
         'A': 4.00,
@@ -138,8 +144,12 @@ function calculateSemesterGPA(button) {
       const FGPA = ((cgpa100 * 1) + (cgpa200 * 1) + (cgpa300 * 2) + (cgpa400 * 2)) / 6;
       const finalClass = classifyGPA(FGPA);
   
-      document.getElementById('fgpaResult').innerText = `FGPA: ${FGPA.toFixed(2)} - Class: ${finalClass}`;
-  
+      if (allSemesterSections.length >= 2) {
+        document.getElementById('fgpaResult').innerText = `FGPA: ${FGPA.toFixed(2)} - Class: ${finalClass}`;
+      } else {
+        document.getElementById('fgpaResult').innerText = '';
+      }
+      
       if (incompleteCourses > 0) {
         alert(`GPA calculated. Add credit hours and marks for the remaining ${incompleteCourses} course(s).`);
       }
@@ -211,11 +221,14 @@ function addSemester() {
   semesterInputs.appendChild(semesterSection);
 }
 
+
 function resetForm() {
   document.getElementById('semesterInputs').innerHTML = '';
   document.getElementById('cgpaResult').innerText = '';
   addSemester();
 }
+
+
 
 function closePopup() {
   document.getElementById('popup').style.display = 'none';
@@ -239,32 +252,74 @@ document.getElementById('modeToggle').addEventListener('change', function () {
   localStorage.setItem('darkMode', isDarkMode);
 });
 
-
 function printResults() {
   let printContent = `
     <div style="text-align:center;">
       <img src="legon logo.jpg" width="100" />
-      <h2>University of Ghana(LEGON) - GPA Report</h2>
+      <h2>University of Ghana (LEGON) - GPA Report</h2>
     </div>
   `;
 
   const semesters = document.querySelectorAll('.semesterSection');
+
   let summaryTable = `
     <h3>Semester Summary</h3>
     <table border="1" cellspacing="0" cellpadding="8" width="100%">
-      <tr><th>Semester</th><th>GPA</th><th>Credits</th><th>Class</th></tr>
+      <tr>
+        <th>Semester</th>
+        <th>Courses</th>
+        <th>Total Credit Hours</th>
+        <th>GPA</th>
+        <th>CGPA</th>
+        <th>Class</th>
+      </tr>
   `;
 
+  let totalPoints = 0;
+  let totalCredits = 0;
+
   semesters.forEach((semester, index) => {
-    const semesterResult = semester.querySelector('.semesterResult').innerText;
-    const gpaMatch = semesterResult.match(/GPA: ([\d.]+).*?Credits: (\d+).*?Class: (.+)/i);
-    if (gpaMatch) {
+    const courseRows = semester.querySelectorAll('.courseRow');
+    let courseNames = [];
+    let semesterCredits = 0;
+    let semesterPoints = 0;
+
+    courseRows.forEach(row => {
+      const inputs = row.querySelectorAll('input');
+      const courseName = inputs[0].value;
+      const credit = parseFloat(inputs[1].value);
+      const marks = parseFloat(inputs[2].value);
+
+      if (!isNaN(credit) && !isNaN(marks)) {
+        const grade = getGrade(marks);
+        const point = {
+          'A': 4.00, 'B+': 3.50, 'B': 3.00, 'C+': 2.50,
+          'C': 2.00, 'D+': 1.50, 'D': 1.00, 'E': 0.50, 'F': 0.00
+        }[grade];
+
+        semesterCredits += credit;
+        semesterPoints += point * credit;
+        courseNames.push(courseName);
+      }
+    });
+
+    let semesterGPA = 0;
+    if (semesterCredits > 0) {
+      semesterGPA = semesterPoints / semesterCredits;
+      totalPoints += semesterPoints;
+      totalCredits += semesterCredits;
+
+      const cgpa = totalPoints / totalCredits;
+      const classLabel = classifyGPA(cgpa.toFixed(2));
+
       summaryTable += `
         <tr>
           <td>Semester ${index + 1}</td>
-          <td>${gpaMatch[1]}</td>
-          <td>${gpaMatch[2]}</td>
-          <td>${gpaMatch[3]}</td>
+          <td>${courseNames.join(", ")}</td>
+          <td>${semesterCredits}</td>
+          <td>${semesterGPA.toFixed(2)}</td>
+          <td>${cgpa.toFixed(2)}</td>
+          <td>${classLabel}</td>
         </tr>
       `;
     }
@@ -273,6 +328,7 @@ function printResults() {
   summaryTable += '</table><br/>';
   printContent += summaryTable;
 
+  // Detailed breakdown
   semesters.forEach((semester, index) => {
     printContent += `<h3>Semester ${index + 1}</h3>`;
     printContent += `
@@ -297,19 +353,27 @@ function printResults() {
         </tr>
       `;
     });
+
     const semesterResult = semester.querySelector('.semesterResult').innerText;
     printContent += `</table><p><strong>${semesterResult}</strong></p><br/>`;
   });
 
+  // Footer
   const overallGPAInfo = document.getElementById('cgpaResult').innerText;
-  printContent += `<hr/><p><strong>${overallGPAInfo}</strong></p>`;
+  const fgpaInfo = document.getElementById('fgpaResult')?.innerText || '';
 
+  printContent += `<hr/><p><strong>${overallGPAInfo}</strong></p>`;
+  if (fgpaInfo) {
+    printContent += `<p><strong>${fgpaInfo}</strong></p>`;
+  }
+
+  // Open print preview
   const printWindow = window.open('', '', 'width=800,height=600');
   printWindow.document.write(`
     <html><head><title>Print Results</title>
     <style>
       body { font-family: Arial, sans-serif; padding: 20px; }
-      table { border-collapse: collapse; }
+      table { border-collapse: collapse; width: 100%; }
       th, td { border: 1px solid #999; text-align: center; }
       img { margin-bottom: 10px; }
       @media print { button { display: none; } }
@@ -319,3 +383,4 @@ function printResults() {
   printWindow.document.close();
   printWindow.print();
 }
+
