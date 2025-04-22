@@ -22,9 +22,6 @@ function classifyGPA(gpa) {
   return 'Fail';
 }
 
-let totalGpaPoints = 0;
-let totalCredits = 0;
-
 function addCourse(button) {
   const courseInputs = button.previousElementSibling;
   const row = document.createElement('div');
@@ -37,28 +34,139 @@ function addCourse(button) {
   `;
   courseInputs.appendChild(row);
 }
-
 function calculateSemesterGPA(button) {
-  const semesterSection = button.closest('.semesterSection');
-  const courseRows = semesterSection.querySelectorAll('.courseRow');
 
-  let semesterPoints = 0;
-  let semesterCredits = 0;
-  let incompleteCourses = 0;
-
-  courseRows.forEach(row => {
-    const inputs = row.querySelectorAll('input');
-    const credit = parseFloat(inputs[1].value);
-    const marks = parseFloat(inputs[2].value);
-
-    if (isNaN(credit) || isNaN(marks)) {
-      incompleteCourses++;
-      return;
+    const semesterSection = button.closest('.semesterSection');
+    const semesterIndex = Array.from(document.querySelectorAll('.semesterSection')).indexOf(semesterSection) + 1;
+    const courseRows = semesterSection.querySelectorAll('.courseRow');
+  
+    let semesterPoints = 0;
+    let semesterCredits = 0;
+    let incompleteCourses = 0;
+  
+    courseRows.forEach(row => {
+      const inputs = row.querySelectorAll('input');
+      const credit = parseFloat(inputs[1].value);
+      const marks = parseFloat(inputs[2].value);
+  
+      if (isNaN(credit) || isNaN(marks)) {
+        incompleteCourses++;
+        return;
+      }
+  
+      const grade = getGrade(marks);
+      const point = {
+        'A': 4.00,
+        'B+': 3.50,
+        'B': 3.00,
+        'C+': 2.50,
+        'C': 2.00,
+        'D+': 1.50,
+        'D': 1.00,
+        'E': 0.50,
+        'F': 0.00
+      }[grade];
+  
+      const gradeBox = row.querySelector('.grade-box');
+      gradeBox.innerText = grade;
+      gradeBox.style.background = point >= 3.0 ? '#d4edda' : point >= 2.0 ? '#fff3cd' : '#f8d7da';
+      gradeBox.style.color = '#333';
+  
+      semesterPoints += point * credit;
+      semesterCredits += credit;
+    });
+  
+    const semesterResult = semesterSection.querySelector('.semesterResult');
+  
+    if (semesterCredits > 0) {
+      const gpa = (semesterPoints / semesterCredits).toFixed(2);
+      const classLabel = classifyGPA(gpa);
+  
+      // Recalculate CGPA across all semesters
+      let overallPoints = 0;
+      let overallCredits = 0;
+      const allSemesterSections = document.querySelectorAll('.semesterSection');
+  
+      allSemesterSections.forEach(section => {
+        const rows = section.querySelectorAll('.courseRow');
+        rows.forEach(row => {
+          const inputs = row.querySelectorAll('input');
+          const credit = parseFloat(inputs[1].value);
+          const marks = parseFloat(inputs[2].value);
+          if (isNaN(credit) || isNaN(marks)) return;
+  
+          const grade = getGrade(marks);
+          const point = {
+            'A': 4.00,
+            'B+': 3.50,
+            'B': 3.00,
+            'C+': 2.50,
+            'C': 2.00,
+            'D+': 1.50,
+            'D': 1.00,
+            'E': 0.50,
+            'F': 0.00
+          }[grade];
+  
+          overallPoints += point * credit;
+          overallCredits += credit;
+        });
+      });
+  
+      const cgpa = (overallPoints / overallCredits).toFixed(2);
+      const cgpaClassLabel = classifyGPA(cgpa);
+  
+      // Update semester result
+      let resultHTML = `
+        <strong>Semester GPA:</strong> ${gpa} (Credits: ${semesterCredits}) - Class: ${classLabel}
+      `;
+  
+      if (semesterIndex >= 2) {
+        resultHTML += `<br/><strong>CGPA:</strong> ${cgpa} (Total Credits: ${overallCredits}) - Class: ${cgpaClassLabel}`;
+      }
+  
+      semesterResult.innerHTML = resultHTML;
+  
+      // Update CGPA at bottom
+      document.getElementById('cgpaResult').innerText = `CGPA: ${cgpa} (Total Credits: ${overallCredits}) - Class: ${cgpaClassLabel}`;
+  
+      // FGPA Calculation
+      const cgpa100 = parseFloat(cgpa);
+      const cgpa200 = parseFloat(cgpa);
+      const cgpa300 = parseFloat(cgpa);
+      const cgpa400 = parseFloat(cgpa);
+      const FGPA = ((cgpa100 * 1) + (cgpa200 * 1) + (cgpa300 * 2) + (cgpa400 * 2)) / 6;
+      const finalClass = classifyGPA(FGPA);
+  
+      document.getElementById('fgpaResult').innerText = `FGPA: ${FGPA.toFixed(2)} - Class: ${finalClass}`;
+  
+      if (incompleteCourses > 0) {
+        alert(`GPA calculated. Add credit hours and marks for the remaining ${incompleteCourses} course(s).`);
+      }
+  
+    } else {
+      semesterResult.innerText = 'Please enter at least one valid course with credit hours and marks.';
     }
+  }
+  
 
-    const grade = getGrade(marks);
-    const point = {
-      'A': 4.00,
+
+function updateMainCGPA() {
+  let totalPoints = 0;
+  let totalCredits = 0;
+
+  const allSections = document.querySelectorAll('.semesterSection');
+  allSections.forEach(section => {
+    const rows = section.querySelectorAll('.courseRow');
+    rows.forEach(row => {
+      const inputs = row.querySelectorAll('input');
+      const credit = parseFloat(inputs[1].value);
+      const marks = parseFloat(inputs[2].value);
+      if (isNaN(credit) || isNaN(marks)) return;
+
+      const grade = getGrade(marks);
+      const point = {
+        'A': 4.00,
       'B+': 3.50,
       'B': 3.00,
       'C+': 2.50,
@@ -67,86 +175,16 @@ function calculateSemesterGPA(button) {
       'D': 1.00,
       'E': 0.50,
       'F': 0.00
-    }[grade];
+      }[grade];
 
-    const gradeBox = row.querySelector('.grade-box');
-    gradeBox.innerText = grade;
-    gradeBox.style.background = point >= 3.0 ? '#d4edda' : point >= 2.0 ? '#fff3cd' : '#f8d7da';
-    gradeBox.style.color = '#333';
-
-    semesterPoints += point * credit;
-    semesterCredits += credit;
+      totalPoints += point * credit;
+      totalCredits += credit;
+    });
   });
 
-  const semesterResult = semesterSection.querySelector('.semesterResult');
-
-  if (semesterCredits > 0) {
-    const gpa = (semesterPoints / semesterCredits).toFixed(2);
-    const classLabel = classifyGPA(gpa);
-    semesterResult.innerText = `Semester GPA: ${gpa} (Total Credits: ${semesterCredits}) - Class: ${classLabel}`;
-
-    // Recalculate CGPA
-    let overallPoints = 0;
-    let overallCredits = 0;
-    const allSemesterSections = document.querySelectorAll('.semesterSection');
-
-    allSemesterSections.forEach(section => {
-      const rows = section.querySelectorAll('.courseRow');
-      rows.forEach(row => {
-        const inputs = row.querySelectorAll('input');
-        const credit = parseFloat(inputs[1].value);
-        const marks = parseFloat(inputs[2].value);
-        if (isNaN(credit) || isNaN(marks)) return;
-
-        const grade = getGrade(marks);
-        const point = {
-          'A': 4.00,
-      'B+': 3.50,
-      'B': 3.00,
-      'C+': 2.50,
-      'C': 2.00,
-      'D+': 1.50,
-      'D': 1.00,
-      'E': 0.50,
-      'F': 0.00
-        }[grade];
-
-        overallPoints += point * credit;
-        overallCredits += credit;
-      });
-    });
-
-    const cgpa = (overallPoints / overallCredits).toFixed(2);
-    const cgpaClassLabel = classifyGPA(cgpa);
-    document.getElementById('cgpaResult').innerText = `CGPA: ${cgpa} (Total Credits: ${overallCredits}) - Class: ${cgpaClassLabel}`;
-
-
-    
-      // Final GPA (FGPA) calculation based on UG levels (100, 200, 300, 400)
-      const cgpa100 = parseFloat(cgpa); // Assuming CGPA for level 100 is provided
-      const cgpa200 = parseFloat(cgpa); // Assuming CGPA for level 200 is provided
-      const cgpa300 = parseFloat(cgpa); // Assuming CGPA for level 300 is provided
-      const cgpa400 = parseFloat(cgpa); // Assuming CGPA for level 400 is provided
-  
-      // Final GPA based on UG weighting
-      const FGPA = ((cgpa100 * 1) + (cgpa200 * 1) + (cgpa300 * 2) + (cgpa400 * 2)) / 6;
-      // Determine final class based on FGPA
-      let finalClass = '';
-      if (FGPA >= 3.6) finalClass = 'First Class';
-      else if (FGPA >= 3.0) finalClass = 'Second Class Upper';
-      else if (FGPA >= 2.0) finalClass = 'Second Class Lower';
-      else if (FGPA >= 1.5) finalClass = 'Third Class';
-      else if (FGPA >= 1.0) finalClass = 'Pass';
-      else finalClass = 'Fail';
-
-    if (incompleteCourses > 0) {
-      alert(`GPA calculated. Add credit hours and marks for the remaining ${incompleteCourses} course(s).`);
-    }
-     // Display FGPA and class
-     document.getElementById('fgpaResult').innerText = `FGPA: ${FGPA.toFixed(2)} - Class: ${finalClass}`;
-  } else {
-    semesterResult.innerText = 'Please enter at least one valid course with credit hours and marks.';
-  }
+  const cgpa = (totalPoints / totalCredits).toFixed(2);
+  const cgpaClass = classifyGPA(cgpa);
+  document.getElementById('cgpaResult').innerText = `CGPA: ${cgpa} (Total Credits: ${totalCredits}) - Class: ${cgpaClass}`;
 }
 
 function addSemester() {
@@ -168,21 +206,14 @@ function addSemester() {
     <button type="button" onclick="addCourse(this)">Add Course</button>
     <button type="button" onclick="calculateSemesterGPA(this)">Calculate Semester GPA</button>
     <div class="semesterResult"></div>
+    <div class="cumulativeCGPA"></div>
   `;
   semesterInputs.appendChild(semesterSection);
-}
-
-function calculateCGPA() {
-  const cgpa = (totalGpaPoints / totalCredits).toFixed(2);
-  const cgpaClassLabel = classifyGPA(cgpa);
-  document.getElementById('cgpaResult').innerText = `CGPA: ${cgpa} (Total Credits: ${totalCredits}) - Class: ${cgpaClassLabel}`;
 }
 
 function resetForm() {
   document.getElementById('semesterInputs').innerHTML = '';
   document.getElementById('cgpaResult').innerText = '';
-  totalGpaPoints = 0;
-  totalCredits = 0;
   addSemester();
 }
 
@@ -208,11 +239,12 @@ document.getElementById('modeToggle').addEventListener('change', function () {
   localStorage.setItem('darkMode', isDarkMode);
 });
 
+
 function printResults() {
   let printContent = `
     <div style="text-align:center;">
-     <img src="legon logo.jpg" width="100" />
-      <h2>University of Ghana-Legon - GPA Report</h2>
+      <img src="legon logo.jpg" width="100" />
+      <h2>University of Ghana(LEGON) - GPA Report</h2>
     </div>
   `;
 
