@@ -1,198 +1,225 @@
 body {
-    font-family: Arial, sans-serif;
-    margin: 20px;
-    transition: background 0.3s, color 0.3s;
+  font-family: Arial, sans-serif;
+  margin: 20px;
+  transition: background 0.3s, color 0.3s;
+}
+
+body.dark {
+  background: #121212;
+  color: white;
+}
+
+.container {
+  max-width: 1000px;
+  margin: auto;
+  padding: 10px;
+}
+
+h2, h4 {
+  text-align: center;
+  word-break: break-word;
+}
+
+.developer-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.developer-info img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #007bff;
+}
+
+.developer-info h3 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.developer-info p {
+  margin: 0;
+  color: gray;
+}
+
+.whatsapp-link {
+  text-decoration: none;
+  color: #25D366;
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+
+.whatsapp-link:hover {
+  color: #128C7E;
+}
+
+.whatsapp-button {
+  text-decoration: none;
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  display: inline-block;
+  transition: background-color 0.3s ease;
+}
+
+.whatsapp-button:hover {
+  background-color: #0056b3;
+}
+
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  animation: fadeIn 0.8s ease-in-out;
+}
+
+.popup-content {
+  background: white;
+  padding: 30px;
+  text-align: center;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 400px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.semester {
+  margin-bottom: 30px;
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+#printBtn {
+  margin-bottom: 20px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  overflow-x: auto;
+  display: block;
+}
+
+th, td {
+  padding: 8px;
+  border: 1px solid #aaa;
+  text-align: center;
+  white-space: nowrap;
+}
+
+button {
+  padding: 10px 14px;
+  margin: 10px 4px;
+  border: none;
+  border-radius: 4px;
+  background-color: #007BFF;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+.toggle-mode {
+  float: right;
+  background: #555;
+}
+
+.print-btn {
+  background-color: green;
+}
+
+.result-display {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #f1f1f1;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  word-wrap: break-word;
+}
+
+.semesterResult {
+  margin-top: 10px;
+  word-wrap: break-word;
+}
+
+input, button {
+  padding: 10px;
+  margin: 5px 0;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.courseRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.courseRow input {
+  flex: 1 1 100px;
+  min-width: 100px;
+}
+
+@media print {
+  body * {
+    visibility: hidden;
   }
-  
-  body.dark {
-    background: #121212;
-    color: white;
+  #print-section, #print-section * {
+    visibility: visible;
+  }
+  #print-section {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .whatsapp-button {
+    width: 100%;
+    text-align: center;
   }
 
   .developer-info {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    margin-bottom: 20px;
+    flex-direction: column;
+    align-items: flex-start;
   }
-  
+
   .developer-info img {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid #007bff;
+    width: 50px;
+    height: 50px;
   }
-  
-  .developer-info h3 {
-    margin: 0;
-    font-size: 20px;
+
+  button {
+    font-size: 15px;
   }
-  
-  .developer-info p {
-    margin: 0;
-    color: gray;
-  }
-  .whatsapp-link {
-    text-decoration: none; /* Removes underline */
-    color: #25D366; /* Optional: WhatsApp green */
-    font-weight: bold;
-    transition: color 0.3s ease;
-  }
-  
-  .whatsapp-link:hover {
-    color: #128C7E; /* Optional: darker green on hover */
-  }
-  .whatsapp-button {
-    text-decoration: none; /* Removes underline */
-    background-color:  #007bff;;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 8px;
-    font-weight: bold;
-    display: inline-block;
-    transition: background-color 0.3s ease;
-  }
-  
-  .whatsapp-button:hover {
-    background-color:  #0056b3;
- 
-  }
-  .popup {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 999;
-    animation: fadeIn 0.8s ease-in-out;
-  }
-  
-  .popup-content {
-    background: white;
-    padding: 30px;
-    text-align: center;
-    border-radius: 10px;
-    max-width: 400px;
-  }
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-  
-  
-  .container {
-    max-width: 1000px;
-    margin: auto;
-  }
-  
-  h2 {
-    text-align: center;
-  }
-  
-  .semester {
-    margin-bottom: 30px;
-    padding: 15px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-  }
-  #printBtn {
-    margin-bottom: 20px;
-  }
-  
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-  }
-  
+
   th, td {
-    padding: 8px;
-    border: 1px solid #aaa;
-    text-align: center;
+    font-size: 14px;
   }
-  
-  button {
-    padding: 8px 14px;
-    margin: 10px 4px;
-    border: none;
-    border-radius: 4px;
-    background-color: #007BFF;
-    color: white;
-    cursor: pointer;
-  }
-  
-  button:hover {
-    opacity: 0.9;
-  }
-  
-  .toggle-mode {
-    float: right;
-    background: #555;
-  }
-  .print-btn {
-    background-color: green;
-  }
-  
-  .result-display {
-    margin-top: 20px;
-    padding: 15px;
-    background-color: #f1f1f1;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-  }
-  
-  .semesterResult {
-    margin-top: 10px;
-  }
-  
-  input, button {
-    padding: 10px;
-    margin: 5px 0;
-    display: block;
-    width: 100%;
-    box-sizing: border-box;
-  }
-  
-  button {
-    background: #007bff;
-    color: white;
-    border: none;
-    cursor: pointer;
-    border-radius: 4px;
-  }
-  
-  button:hover {
-    background: #0056b3;
-  }
-  
-  .courseRow {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 10px;
-  }
-  
-  .courseRow input {
-    flex: 1;
-  }
-  @media print {
-    body * {
-      visibility: hidden;
-    }
-    #print-section, #print-section * {
-      visibility: visible;
-    }
-    #print-section {
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 100%;
-    }
-  }
-  
-  
-  
+}
