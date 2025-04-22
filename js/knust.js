@@ -62,6 +62,7 @@ function updateGrade(input, semId) {
 
   calculateSemesterCWA(semId);
 }
+
 function calculateSemesterCWA(semId) {
   const rows = document.querySelectorAll(`#table-${semId} tr:not(:first-child)`);
   let totalWeighted = 0;
@@ -82,6 +83,7 @@ function calculateSemesterCWA(semId) {
 
   const semesterCWA = totalCredits ? (totalWeighted / totalCredits).toFixed(2) : "0.00";
   const semesterSWA = totalCredits ? (totalWeighted / totalCredits).toFixed(2) : "0.00";
+
   const classRemark = getClassRemark(semesterCWA);
 
   document.getElementById(`result-${semId}`).innerHTML = `
@@ -93,7 +95,6 @@ function calculateSemesterCWA(semId) {
 
   calculateCWA(); // Update overall automatically
 }
-
 
 function calculateCWA() {
   let totalWeighted = 0;
@@ -163,36 +164,13 @@ function getSemesterIdFromTableId(tableId) {
 function printResults() {
   let printContent = `
     <div style="text-align:center;">
-      <img src="ucc logo.jpg" width="100" />
-      <h2>University of Cape Coast - CWA Report</h2>
+      <img src="knust.jpg" width="100" />
+      <h2> Kwame Nkrumah University of Science and Technology(KNUST) - CWA Report</h2>
       <p>Date: ${new Date().toLocaleDateString()}</p>
     </div>
   `;
 
   const semesters = document.querySelectorAll('.semester');
-  let summaryTable = `
-    <h3>Semester Summary</h3>
-    <table border="1" cellspacing="0" cellpadding="8" width="100%">
-      <tr><th>Semester</th><th>CWA</th><th>Credits</th><th>Class</th></tr>
-  `;
-
-  semesters.forEach((semester, index) => {
-    const semesterResult = semester.querySelector('.semesterResult').innerText;
-    const cwaMatch = semesterResult.match(/CWA: ([\d.]+).*?Credits: (\d+).*?Class: (.+)/i);
-    if (cwaMatch) {
-      summaryTable += `
-        <tr>
-          <td>Semester ${index + 1}</td>
-          <td>${cwaMatch[1]}</td>
-          <td>${cwaMatch[2]}</td>
-          <td>${cwaMatch[3]}</td>
-        </tr>
-      `;
-    }
-  });
-
-  summaryTable += '</table><br/>';
-  printContent += summaryTable;
 
   semesters.forEach((semester, index) => {
     printContent += `<h3>Semester ${index + 1}</h3>`;
@@ -203,28 +181,36 @@ function printResults() {
           <th>Credit Hours</th>
           <th>Marks</th>
           <th>Grade</th>
+          <th>Remark</th>
         </tr>
     `;
 
-    const courseRows = semester.querySelectorAll('.courseRow');
+    const courseRows = semester.querySelectorAll('table tr:not(:first-child)');
     courseRows.forEach(row => {
-      const inputs = row.querySelectorAll('input');
-      const grade = row.querySelector('.grade-box').innerText;
+      const courseName = row.cells[0].querySelector('input')?.value || '';
+      const credit = row.cells[1].querySelector('input')?.value || '';
+      const marks = row.cells[2].querySelector('input')?.value || '';
+      const grade = row.cells[3]?.innerText || '';
+      const remark = row.cells[4]?.innerText || '';
+
       printContent += `
         <tr>
-          <td>${inputs[0].value}</td>
-          <td>${inputs[1].value}</td>
-          <td>${inputs[2].value}</td>
+          <td>${courseName}</td>
+          <td>${credit}</td>
+          <td>${marks}</td>
           <td>${grade}</td>
+          <td>${remark}</td>
         </tr>
       `;
     });
 
-    const semesterResult = semester.querySelector('.semesterResult').innerText;
-    printContent += `</table><p><strong>${semesterResult}</strong></p><br/>`;
+    const resultDiv = semester.querySelector(`#result-${index + 1}`);
+    if (resultDiv) {
+      printContent += `</table><p><strong>${resultDiv.innerHTML}</strong></p><br/>`;
+    }
   });
 
-  const overallCWAInfo = document.getElementById('overallCWA').innerText;
+  const overallCWAInfo = document.getElementById('overallCWA').innerHTML;
   printContent += `<hr/><p><strong>${overallCWAInfo}</strong></p>`;
 
   const printWindow = window.open('', '', 'width=800,height=600');
@@ -232,8 +218,8 @@ function printResults() {
     <html><head><title>Print Results</title>
     <style>
       body { font-family: Arial, sans-serif; padding: 20px; }
-      table { border-collapse: collapse; width: 100%; }
-      th, td { border: 1px solid #999; text-align: center; }
+      table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
+      th, td { border: 1px solid #999; text-align: center; padding: 8px; }
       img { margin-bottom: 10px; }
       h2, h3 { margin-bottom: 5px; }
       @media print { button { display: none; } }
