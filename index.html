@@ -101,20 +101,39 @@
       color: #333;
     }
 
+    /* Enhanced Donate Button */
     .whatsapp-button {
       text-decoration: none;
-      background-color: #25D366;
+      background: linear-gradient(45deg, #ff6f61, #ff3d5f); /* Gradient background */
       color: white;
-      padding: 10px 20px;
-      border-radius: 8px;
+      padding: 15px 25px;
+      border-radius: 50px; /* Rounded corners */
       font-weight: bold;
       display: inline-block;
       margin-top: 10px;
-      transition: background-color 0.3s ease;
+      transition: all 0.3s ease-in-out; /* Smooth transition for effects */
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      box-shadow: 0 5px 15px rgba(255, 0, 0, 0.2);
+      font-size: 16px;
     }
 
-    .whatsapp-button:hover {
-      background-color: #128C7E;
+    /* Hover and Focus Effects */
+    .whatsapp-button:hover,
+    .whatsapp-button:focus {
+      background: linear-gradient(45deg, #ff3d5f, #ff6f61);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(255, 0, 0, 0.3);
+    }
+
+    /* Active/Click Effect */
+    .whatsapp-button:active {
+      transform: translateY(0);
+      box-shadow: 0 3px 8px rgba(255, 0, 0, 0.2);
+    }
+
+    .whatsapp-button i {
+      margin-right: 10px;
     }
 
     /* Mobile responsiveness */
@@ -163,8 +182,10 @@
   <section class="donate-section">
     <h2>Support Our Work</h2>
     <p>Your support helps us keep this GPA calculator free and running smoothly.</p>
-    <input type="number" id="amount" placeholder="Enter amount (GHS)">
-    <button onclick="payWithPaystack()">Donate Now</button>
+    <input type="number" id="amount" placeholder="Enter amount (GHS)" />
+    <a href="#" class="whatsapp-button" onclick="payWithPaystack()">
+      <i class="fab fa-whatsapp"></i> Donate Now
+    </a>
   </section>
   
   <script src="https://js.paystack.co/v1/inline.js"></script>
@@ -195,8 +216,5 @@
       handler.openIframe();
     }
   </script>
-  
-  
-  
 </body>
 </html>
