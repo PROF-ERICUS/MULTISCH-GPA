@@ -28,13 +28,40 @@ function addCourse(semId) {
   const row = table.insertRow();
   row.innerHTML = `
     <td><input type="text" placeholder="e.g. WEB DESIGN"/></td>
-    <td><input type="number" min="1" placeholder="3"/></td>
-    <td><input type="number" min="0" max="100" oninput="updateGrade(this, ${semId})"/></td>
+    <td><input type="number" min="1" placeholder="3" oninput="validateCredit(this, ${semId})"/></td>
+    <td><input type="number" min="0" max="100" oninput="validateMarks(this, ${semId})"/></td>
     <td class="grade"></td>
     <td class="remark"></td>
     <td><button onclick="removeRow(this)">Remove</button></td>
   `;
 }
+
+function validateCredit(input, semId) {
+  const value = parseFloat(input.value);
+
+  if (!isNaN(value) && value > 0) {
+    input.style.border = "1px solid #ccc";
+    calculateSemesterCWA(semId);
+  } else {
+    input.style.border = "2px solid red";
+    alert("Please enter a valid credit hour (must be greater than 0)");
+    input.focus();
+  }
+}
+
+function validateMarks(input, semId) {
+  const value = parseFloat(input.value);
+
+  if (!isNaN(value) && value >= 0 && value <= 100) {
+    input.style.border = "1px solid #ccc";
+    updateGrade(input, semId);
+  } else {
+    input.style.border = "2px solid red";
+    alert("Please enter valid marks (between 0 and 100)");
+    input.focus();
+  }
+}
+
 
 function removeRow(btn) {
   const row = btn.parentElement.parentElement;
