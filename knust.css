@@ -223,3 +223,37 @@ input, button {
     font-size: 14px;
   }
 }
+.cwa-summary {
+  background-color: #f1f1f1;
+  padding: 12px 16px;
+  border-left: 5px solid #007BFF;
+  margin-top: 10px;
+  border-radius: 8px;
+  font-size: 15px;
+  color:  #007BFF;
+  text-align: left;
+  line-height: 1.6;
+}
+
+.cwa-summary strong {
+  display: inline-block;
+  min-width: 180px;
+  color: #000000;
+}
+
+.overall-cwa-box {
+  background-color: #e6ffe6;
+  padding: 20px;
+  border: 2px dashed #2e7d32;
+  border-radius: 10px;
+  margin-top: 30px;
+  font-size: 16px;
+  text-align: center;
+  color: #1a1a1a;
+}
+
+.overall-cwa-box h3 {
+  color: #006400;
+  margin-bottom: 10px;
+}
+
