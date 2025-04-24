@@ -121,12 +121,32 @@ function calculateSemesterCWA(semId) {
   }
 
   const averageCwa = counted ? (totalCwa / counted).toFixed(2) : "0.00";
-  const classRemark = getClassRemark(semesterCWA);
+  // Calculate cumulative weighted and credits up to this semester
+let cumulativeWeighted = 0;
+let cumulativeCredits = 0;
 
-  document.getElementById(`result-${semId}`).innerHTML = `
+for (let i = 1; i <= semId; i++) {
+  const rows = document.querySelectorAll(`#table-${i} tr:not(:first-child)`);
+  rows.forEach(row => {
+    const credit = parseFloat(row.cells[1].querySelector("input")?.value || 0);
+    const mark = parseFloat(row.cells[2].querySelector("input")?.value || 0);
+    if (credit && !isNaN(mark)) {
+      cumulativeCredits += credit;
+      cumulativeWeighted += credit * mark;
+    }
+  });
+}
+
+const cumulativeCWA = cumulativeCredits ? (cumulativeWeighted / cumulativeCredits).toFixed(2) : "0.00";
+const classRemark = getClassRemark(semesterCWA);
+
+document.getElementById(`result-${semId}`).innerHTML = `
+  <div class="cwa-summary">
     <strong>Semester ${semId} CWA:</strong> ${semesterCWA} (${classRemark})<br/>
-    <strong>Cumulative CWA up to Semester ${semId}:</strong> ${averageCwa}
-  `;
+    <strong>Cumulative CWA up to Semester ${semId}:</strong> ${cumulativeCWA}
+  </div>
+`;
+
 
   calculateCWA(); // Update overall display
 }
@@ -151,10 +171,13 @@ function calculateCWA() {
   const classRemark = getClassRemark(cwa);
 
   document.getElementById("overallCWA").innerHTML = `
+  <div class="overall-cwa-box">
     <h3>Overall CWA: ${cwa} (${classRemark})</h3>
     <p><strong>Total Marks:</strong> ${totalWeighted.toFixed(2)}</p>
     <p><strong>Total Credit Hours:</strong> ${totalCredits}</p>
-  `;
+  </div>
+`;
+
 }
 
 function getClassRemark(cwa) {
