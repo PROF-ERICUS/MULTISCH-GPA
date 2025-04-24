@@ -173,7 +173,7 @@ function calculateCWA() {
   document.getElementById("overallCWA").innerHTML = `
   <div class="overall-cwa-box">
     <h3>Overall CWA: ${cwa} (${classRemark})</h3>
-    <p><strong>Total Marks:</strong> ${totalWeighted.toFixed(2)}</p>
+    <p><strong>Total Weight:</strong> ${totalWeighted.toFixed(2)}</p>
     <p><strong>Total Credit Hours:</strong> ${totalCredits}</p>
   </div>
 `;
