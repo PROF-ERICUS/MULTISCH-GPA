@@ -185,4 +185,42 @@ body {
     font-weight: bold;
     cursor: pointer;
   }
+  .courseRow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    position: relative;
+  }
+  
+  .courseRow input {
+    flex: 1;
+    padding: 6px;
+  }
+  
+  .remove-btn {
+    background-color: #d9534f;
+    border: none;
+    color: white;
+    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 50%;
+    cursor: pointer;
+    margin-left: 5px;
+    line-height: 1;
+    height: 25px;
+    width: 25px;
+  }
+  
+  .remove-btn:hover {
+    background-color: #c9302c;
+  }
+  
+  
+  
+  
+  
+  
+  
+  
   
