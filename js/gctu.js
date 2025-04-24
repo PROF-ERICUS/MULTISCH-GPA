@@ -29,8 +29,16 @@ function addCourse(button) {
     <input type="number" placeholder="Credit Hours" min="1" required>
     <input type="number" placeholder="Marks (0-100)" min="0" max="100" required>
     <span class="grade-box"></span>
+    <button type="button" class="remove-btn" onclick="removeCourse(this)">×</button>
   `;
   courseInputs.appendChild(row);
+}
+
+function removeCourse(button) {
+  const row = button.parentElement;
+  const semesterSection = row.closest('.semesterSection');
+  row.remove();
+  calculateSemesterGPA(semesterSection.querySelector('button[onclick*="calculateSemesterGPA"]'));
 }
 
 function calculateSemesterGPA(button) {
