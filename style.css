@@ -215,6 +215,42 @@ body {
   .remove-btn:hover {
     background-color: #c9302c;
   }
+
+.coming-soon-banner {
+  width: 100%;
+  overflow: hidden;
+  background: linear-gradient(to right, #ff6f61, #ff3d5f);
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+  padding: 10px 0;
+  position: relative;
+  box-sizing: border-box;
+  white-space: nowrap;
+}
+
+.rotating-banner {
+  width: 100%;
+  background: linear-gradient(to right, #ff6f61, #ff3d5f);
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+  padding: 12px 0;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.rotating-message {
+  animation: fadeMessage 1s ease-in-out;
+  transition: opacity 1s ease-in-out;
+}
+
+@keyframes fadeMessage {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
   
   
   
