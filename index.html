@@ -173,11 +173,49 @@
       h1 {
         font-size: 20px;
       }
+      .coming-soon-banner {
+  width: 100%;
+  overflow: hidden;
+  background: linear-gradient(to right, #ff6f61, #ff3d5f);
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+  padding: 10px 0;
+  position: relative;
+  box-sizing: border-box;
+  white-space: nowrap;
+}
+
+.rotating-banner {
+  width: 100%;
+  background: linear-gradient(to right, #ff6f61, #ff3d5f);
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+  padding: 12px 0;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.rotating-message {
+  animation: fadeMessage 1s ease-in-out;
+  transition: opacity 1s ease-in-out;
+}
+
+@keyframes fadeMessage {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
     }
   </style>
 </head>
 <body>
   <h1>Select Your School</h1>
+  <div class="rotating-banner">
+  <div class="rotating-message" id="messageBox">🚀 New schools are coming soon.</div>
+</div>
   <div class="school-logos">
     <a class="school-logo" href="gctu.html">
       <img src="gctu logo.jpg" alt="GCTU Logo" />
@@ -233,6 +271,26 @@
       });
       handler.openIframe();
     }
+     const messages = [
+  "🚀 New schools are coming soon.",
+  "🎯 Admission opens next semester.",
+  "📢 Stay connected for updates!",
+  "📚 Explore new programs and opportunities."
+];
+
+let index = 0;
+const messageBox = document.getElementById("messageBox");
+
+setInterval(() => {
+  index = (index + 1) % messages.length;
+  messageBox.style.opacity = 0;
+
+  setTimeout(() => {
+    messageBox.textContent = messages[index];
+    messageBox.style.opacity = 1;
+  }, 500);
+}, 4000);
+
   </script>
 </body>
 </html>
