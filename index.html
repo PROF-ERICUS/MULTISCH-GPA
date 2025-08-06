@@ -7,7 +7,7 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-       background: transparent; /* Allow video to show */
+      background: #f0f2f5;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -18,42 +18,10 @@
       box-sizing: border-box;
       text-align: center;
     }
-    
- .video-background {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  min-height: 100%;
-  z-index: 0;
-}
-
-
-.video-background video {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  min-width: 100%;
-  min-height: 100%;
-  transform: translate(-50%, -50%);
-  object-fit: cover;
-}
-.video-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  min-height: 100%;
-  background: rgba(0, 0, 0, 0.8);
-  pointer-events: none;
-  z-index: 1;
-}
-
-
 
     h1 {
       margin-bottom: 30px;
-       color: #ffffff;
+      color: #333;
       font-size: 24px;
     }
 
@@ -62,8 +30,6 @@
       gap: 30px;
       flex-wrap: wrap;
       justify-content: center;
-        position: relative;
-  z-index: 2;
     }
 
     .school-logo {
@@ -78,8 +44,6 @@
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
       text-decoration: none;
       color: inherit;
-        position: relative;
-  z-index: 2;
     }
 
     .school-logo:hover {
@@ -209,25 +173,49 @@
       h1 {
         font-size: 20px;
       }
+      .coming-soon-banner {
+  width: 100%;
+  overflow: hidden;
+  background: linear-gradient(to right, #ff6f61, #ff3d5f);
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+  padding: 10px 0;
+  position: relative;
+  box-sizing: border-box;
+  white-space: nowrap;
+}
+
+.rotating-banner {
+  width: 100%;
+  background: linear-gradient(to right, #ff6f61, #ff3d5f);
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+  padding: 12px 0;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.rotating-message {
+  animation: fadeMessage 1s ease-in-out;
+  transition: opacity 1s ease-in-out;
+}
+
+@keyframes fadeMessage {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
     }
   </style>
 </head>
- 
 <body>
-   <div class="video-background">
-    <video autoplay muted loop playsinline>
-      <source src="video.mp4" type="video/mp4">
-      Your browser does not support the video tag.
-    </video>
-  </div>
-  <!-- Dimming Overlay -->
-<div class="video-overlay"></div>
- 
   <h1>Select Your School</h1>
- <div class="rotating-banner">
+  <div class="rotating-banner">
   <div class="rotating-message" id="messageBox">🚀 New schools are coming soon.</div>
 </div>
-
   <div class="school-logos">
     <a class="school-logo" href="gctu.html">
       <img src="gctu logo.jpg" alt="GCTU Logo" />
@@ -249,11 +237,10 @@
       <img src="uew.logo.png" alt="UEW Logo" />
       <span>UEW</span>
     </a>
-    <a class="school-logo" href="uew.html">
+    <a class="school-logo" href="ttu.html">
       <img src="ttu.logo.png" alt="TTU Logo" />
       <span>TTU</span>
     </a>
-
   </div>
 
   <section class="donate-section">
@@ -264,8 +251,6 @@
       <i class="fab fa-whatsapp"></i> Donate Now
     </a>
   </section>
-
-
   
   <script src="https://js.paystack.co/v1/inline.js"></script>
   <script>
@@ -294,8 +279,7 @@
       });
       handler.openIframe();
     }
-
-    const messages = [
+     const messages = [
   "🚀 New schools are coming soon.",
   "🎯 Admission opens next semester.",
   "📢 Stay connected for updates!",
@@ -318,5 +302,6 @@ setInterval(() => {
   </script>
 </body>
 </html>
+
 
 
