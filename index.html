@@ -19,15 +19,15 @@
       text-align: center;
     }
     
-  .video-background {
- position: fixed;
+ .video-background {
+  position: absolute;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
-  object-fit: cover;
-  z-index: 0; /* stays below overlay and content */
+  width: 100%;
+  min-height: 100%;
+  z-index: 0;
 }
+
 
 .video-background video {
   position: absolute;
@@ -39,15 +39,16 @@
   object-fit: cover;
 }
 .video-overlay {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  min-height: 100%;
   background: rgba(0, 0, 0, 0.8);
   pointer-events: none;
-  z-index: 1; /* ensure it's above video */
+  z-index: 1;
 }
+
 
 
     h1 {
@@ -61,6 +62,8 @@
       gap: 30px;
       flex-wrap: wrap;
       justify-content: center;
+        position: relative;
+  z-index: 2;
     }
 
     .school-logo {
@@ -75,6 +78,8 @@
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
       text-decoration: none;
       color: inherit;
+        position: relative;
+  z-index: 2;
     }
 
     .school-logo:hover {
@@ -313,4 +318,5 @@ setInterval(() => {
   </script>
 </body>
 </html>
+
 
