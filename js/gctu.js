@@ -1,3 +1,4 @@
+// -------------------- GRADE LOGIC --------------------
 function getGrade(marks) {
   if (marks >= 80) return 'A';
   if (marks >= 75) return 'A-';
@@ -20,6 +21,79 @@ function classifyGPA(gpa) {
   return 'Fail';
 }
 
+// -------------------- USER SESSION --------------------
+let currentUser = localStorage.getItem('currentUser') || '';
+
+function askForUser() {
+  if (!currentUser) {
+    currentUser = prompt('Enter your name or student ID to load/save your records:');
+    if (currentUser) {
+      localStorage.setItem('currentUser', currentUser);
+    } else {
+      currentUser = 'guest';
+    }
+  }
+  document.getElementById('usernameDisplay').innerText = currentUser;
+}
+
+// -------------------- STORAGE HELPERS --------------------
+function getUserKey() {
+  return `gctuData_${currentUser}`;
+}
+
+function saveData() {
+  const semesters = [];
+  document.querySelectorAll('.semesterSection').forEach((semester) => {
+    const courses = [];
+    semester.querySelectorAll('.courseRow').forEach((row) => {
+      const inputs = row.querySelectorAll('input');
+      courses.push({
+        name: inputs[0].value,
+        credit: inputs[1].value,
+        marks: inputs[2].value,
+      });
+    });
+    semesters.push(courses);
+  });
+  localStorage.setItem(getUserKey(), JSON.stringify(semesters));
+}
+
+function loadData() {
+  const saved = localStorage.getItem(getUserKey());
+  if (!saved) return;
+  const semesters = JSON.parse(saved);
+  const container = document.getElementById('semesterInputs');
+  container.innerHTML = '';
+
+  semesters.forEach((courses, i) => {
+    const semesterSection = document.createElement('div');
+    semesterSection.className = 'semesterSection';
+    semesterSection.innerHTML = `
+      <h4>Semester ${i + 1}</h4>
+      <div class="courseInputs"></div>
+      <button type="button" onclick="addCourse(this)">Add Course</button>
+      <button type="button" onclick="calculateSemesterGPA(this)">Calculate Semester GPA</button>
+      <div class="semesterResult"></div>
+      <div class="cumulativeCGPA"></div>
+    `;
+    const courseContainer = semesterSection.querySelector('.courseInputs');
+    courses.forEach((course) => {
+      const row = document.createElement('div');
+      row.className = 'courseRow';
+      row.innerHTML = `
+        <input type="text" placeholder="Course Name" value="${course.name || ''}" required>
+        <input type="number" placeholder="Credit Hours" min="1" value="${course.credit || ''}" required>
+        <input type="number" placeholder="Marks (0-100)" min="0" max="100" value="${course.marks || ''}" required>
+        <span class="grade-box"></span>
+        <button type="button" class="remove-btn" onclick="removeCourse(this)">×</button>
+      `;
+      courseContainer.appendChild(row);
+    });
+    container.appendChild(semesterSection);
+  });
+}
+
+// -------------------- UI FUNCTIONS --------------------
 function addCourse(button) {
   const courseInputs = button.previousElementSibling;
   const row = document.createElement('div');
@@ -32,137 +106,18 @@ function addCourse(button) {
     <button type="button" class="remove-btn" onclick="removeCourse(this)">×</button>
   `;
   courseInputs.appendChild(row);
+  attachAutoSave(row);
+  saveData();
 }
 
 function removeCourse(button) {
-  const row = button.parentElement;
-  const semesterSection = row.closest('.semesterSection');
-  row.remove();
-  calculateSemesterGPA(semesterSection.querySelector('button[onclick*="calculateSemesterGPA"]'));
-}
-
-function calculateSemesterGPA(button) {
-  const semesterSection = button.closest('.semesterSection');
-  const courseRows = semesterSection.querySelectorAll('.courseRow');
-
-  let semesterPoints = 0;
-  let semesterCredits = 0;
-  let incompleteCourses = 0;
-
-  courseRows.forEach(row => {
-    const inputs = row.querySelectorAll('input');
-    const credit = parseFloat(inputs[1].value);
-    const marks = parseFloat(inputs[2].value);
-
-    if (isNaN(credit) || isNaN(marks)) {
-      incompleteCourses++;
-      return;
-    }
-    
-    if (marks < 0 || marks > 100 || credit <= 0) {
-      alert('Please enter valid marks (0–100) and credit hours greater than 0.');
-      incompleteCourses++;
-      return;
-    }
-    
-
-    const grade = getGrade(marks);
-    const point = {
-      'A': 4.00, 'A-': 3.75, 'B+': 3.50, 'B': 3.25,
-      'B-': 3.00, 'C+': 2.75, 'C': 2.50, 'C-': 2.00,
-      'D': 1.50, 'F': 0.00
-    }[grade];
-
-    const gradeBox = row.querySelector('.grade-box');
-    gradeBox.innerText = grade;
-    gradeBox.style.background = point >= 3.0 ? '#d4edda' : point >= 2.0 ? '#fff3cd' : '#f8d7da';
-    gradeBox.style.color = '#333';
-
-    semesterPoints += point * credit;
-    semesterCredits += credit;
-  });
-
-  const semesterResult = semesterSection.querySelector('.semesterResult');
-  const cumulativeResult = semesterSection.querySelector('.cumulativeCGPA');
-
-  if (semesterCredits > 0) {
-    const semesterGPA = (semesterPoints / semesterCredits).toFixed(2);
-    const semesterClass = classifyGPA(semesterGPA);
-    semesterResult.innerText = `Semester GPA: ${semesterGPA} (Total Credits: ${semesterCredits}) - Class: ${semesterClass}`;
-
-    // Calculate cumulative up to this semester
-    let cumulativePoints = 0;
-    let cumulativeCredits = 0;
-    const allSections = document.querySelectorAll('.semesterSection');
-
-    for (let i = 0; i <= Array.from(allSections).indexOf(semesterSection); i++) {
-      const rows = allSections[i].querySelectorAll('.courseRow');
-      rows.forEach(row => {
-        const inputs = row.querySelectorAll('input');
-        const credit = parseFloat(inputs[1].value);
-        const marks = parseFloat(inputs[2].value);
-        if (isNaN(credit) || isNaN(marks)) return;
-
-        const grade = getGrade(marks);
-        const point = {
-          'A': 4.00, 'A-': 3.75, 'B+': 3.50, 'B': 3.25,
-          'B-': 3.00, 'C+': 2.75, 'C': 2.50, 'C-': 2.00,
-          'D': 1.50, 'F': 0.00
-        }[grade];
-
-        cumulativePoints += point * credit;
-        cumulativeCredits += credit;
-      });
-    }
-
-    const cgpa = (cumulativePoints / cumulativeCredits).toFixed(2);
-    const cgpaClass = classifyGPA(cgpa);
-    cumulativeResult.innerText = `Cumulative CGPA: ${cgpa} (Credits: ${cumulativeCredits}) - Class: ${cgpaClass}`;
-
-    updateMainCGPA();
-
-    if (incompleteCourses > 0) {
-      alert(`GPA calculated. Add credit hours and marks for the remaining ${incompleteCourses} course(s).`);
-    }
-  } else {
-    semesterResult.innerText = 'Please enter at least one valid course with credit hours and marks.';
-  }
-}
-
-function updateMainCGPA() {
-  let totalPoints = 0;
-  let totalCredits = 0;
-
-  const allSections = document.querySelectorAll('.semesterSection');
-  allSections.forEach(section => {
-    const rows = section.querySelectorAll('.courseRow');
-    rows.forEach(row => {
-      const inputs = row.querySelectorAll('input');
-      const credit = parseFloat(inputs[1].value);
-      const marks = parseFloat(inputs[2].value);
-      if (isNaN(credit) || isNaN(marks)) return;
-
-      const grade = getGrade(marks);
-      const point = {
-        'A': 4.00, 'A-': 3.75, 'B+': 3.50, 'B': 3.25,
-        'B-': 3.00, 'C+': 2.75, 'C': 2.50, 'C-': 2.00,
-        'D': 1.50, 'F': 0.00
-      }[grade];
-
-      totalPoints += point * credit;
-      totalCredits += credit;
-    });
-  });
-
-  const cgpa = (totalPoints / totalCredits).toFixed(2);
-  const cgpaClass = classifyGPA(cgpa);
-  document.getElementById('cgpaResult').innerText = `CGPA: ${cgpa} (Total Credits: ${totalCredits}) - Class: ${cgpaClass}`;
+  button.parentElement.remove();
+  saveData();
 }
 
 function addSemester() {
   const semesterInputs = document.getElementById('semesterInputs');
   const semesterCount = semesterInputs.getElementsByClassName('semesterSection').length + 1;
-
   const semesterSection = document.createElement('div');
   semesterSection.className = 'semesterSection';
   semesterSection.innerHTML = `
@@ -181,147 +136,144 @@ function addSemester() {
     <div class="cumulativeCGPA"></div>
   `;
   semesterInputs.appendChild(semesterSection);
+  attachAutoSave(semesterSection);
+  saveData();
 }
 
+// -------------------- GPA CALCULATIONS --------------------
+function calculateSemesterGPA(button) {
+  const semesterSection = button.closest('.semesterSection');
+  const courseRows = semesterSection.querySelectorAll('.courseRow');
+  let semesterPoints = 0, semesterCredits = 0;
+  let hasInvalid = false;
+  let hasOver100 = false;
+
+  courseRows.forEach((row) => {
+    const inputs = row.querySelectorAll('input');
+    const credit = parseFloat(inputs[1].value);
+    const marks = parseFloat(inputs[2].value);
+
+    // 🚨 Missing values
+    if (isNaN(credit) || isNaN(marks)) {
+      hasInvalid = true;
+      return;
+    }
+
+    // 🚨 Marks greater than 100
+    if (marks > 100) {
+      hasOver100 = true;
+      return;
+    }
+
+    const grade = getGrade(marks);
+    const point = {
+      'A': 4.0, 'A-': 3.75, 'B+': 3.5, 'B': 3.25,
+      'B-': 3.0, 'C+': 2.75, 'C': 2.5, 'C-': 2.0,
+      'D': 1.5, 'F': 0.0
+    }[grade];
+
+    row.querySelector('.grade-box').innerText = grade;
+    semesterPoints += point * credit;
+    semesterCredits += credit;
+  });
+
+  // 🧾 Handle invalid input alerts
+  if (hasInvalid) {
+    alert("Please enter both Credit Hours and Marks for all courses before calculating GPA.");
+    return;
+  }
+
+  if (hasOver100) {
+    alert("Invalid marks entered! Marks cannot be greater than 100.");
+    return;
+  }
+
+  if (semesterCredits === 0) {
+    alert("Please add at least one valid course before calculating GPA.");
+    return;
+  }
+
+  // ✅ Calculate GPA
+  const gpa = (semesterPoints / semesterCredits).toFixed(2);
+  semesterSection.querySelector('.semesterResult').innerText = `Semester GPA: ${gpa}`;
+
+  updateMainCGPA();
+  saveData();
+}
+
+
+
+function updateMainCGPA() {
+  let totalPoints = 0, totalCredits = 0;
+  document.querySelectorAll('.semesterSection').forEach((section) => {
+    section.querySelectorAll('.courseRow').forEach((row) => {
+      const inputs = row.querySelectorAll('input');
+      const credit = parseFloat(inputs[1].value);
+      const marks = parseFloat(inputs[2].value);
+      if (isNaN(credit) || isNaN(marks)) return;
+      const grade = getGrade(marks);
+      const point = {
+        'A': 4.0, 'A-': 3.75, 'B+': 3.5, 'B': 3.25,
+        'B-': 3.0, 'C+': 2.75, 'C': 2.5, 'C-': 2.0,
+        'D': 1.5, 'F': 0.0
+      }[grade];
+      totalPoints += point * credit;
+      totalCredits += credit;
+    });
+  });
+  if (totalCredits === 0) return;
+  const cgpa = (totalPoints / totalCredits).toFixed(2);
+  const cgpaClass = classifyGPA(cgpa);
+  document.getElementById('cgpaResult').innerText = `CGPA: ${cgpa} (Credits: ${totalCredits}) - Class: ${cgpaClass}`;
+  saveData();
+}
+
+// -------------------- RESET, CLEAR, POPUP --------------------
 function resetForm() {
+  if (!confirm('Reset all data for this user?')) return;
+  localStorage.removeItem(getUserKey());
   document.getElementById('semesterInputs').innerHTML = '';
   document.getElementById('cgpaResult').innerText = '';
   addSemester();
+}
+
+function clearHistory() {
+  localStorage.removeItem(getUserKey());
+  alert(`All saved data for ${currentUser} cleared.`);
+}
+
+function switchUser() {
+  localStorage.removeItem('currentUser');
+  location.reload();
 }
 
 function closePopup() {
   document.getElementById('popup').style.display = 'none';
 }
 
-window.onload = function () {
-  setTimeout(() => {
-    document.getElementById('popup').style.display = 'flex';
-  }, 500);
+// -------------------- AUTO SAVE BIND --------------------
+function attachAutoSave(container) {
+  container.querySelectorAll('input').forEach((input) => {
+    input.addEventListener('input', saveData);
+  });
+}
 
-  const darkModePreference = localStorage.getItem('darkMode') === 'true';
+// -------------------- DARK MODE + LOAD --------------------
+window.onload = function () {
+  askForUser();
+  setTimeout(() => (document.getElementById('popup').style.display = 'flex'), 500);
+
+  const darkModePreference = localStorage.getItem(`darkMode_${currentUser}`) === 'true';
   document.getElementById('modeToggle').checked = darkModePreference;
   document.body.classList.toggle('dark', darkModePreference);
 
-  addSemester();
+  loadData();
+  if (document.querySelectorAll('.semesterSection').length === 0) addSemester();
+  document.querySelectorAll('.semesterSection').forEach(attachAutoSave);
 };
 
 document.getElementById('modeToggle').addEventListener('change', function () {
   const isDarkMode = this.checked;
   document.body.classList.toggle('dark', isDarkMode);
-  localStorage.setItem('darkMode', isDarkMode);
+  localStorage.setItem(`darkMode_${currentUser}`, isDarkMode);
 });
-
-
-function printResults() {
-  let printContent = `
-    <div style="text-align:center;">
-      <img src="gctu logo.jpg" width="100" />
-      <h2>Ghana Communication Technology University - GPA Report</h2>
-    </div>
-  `;
-
-  const semesters = document.querySelectorAll('.semesterSection');
-
-  let summaryTable = `
-    <h3>Semester Summary</h3>
-    <table border="1" cellspacing="0" cellpadding="8" width="100%">
-      <tr>
-        <th>Semester</th>
-        <th>Course Names</th>
-        <th>Total Credit Hours</th>
-        <th>Semester GPA</th>
-        <th>Cumulative CGPA</th>
-        <th>Class</th>
-      </tr>
-  `;
-
-  semesters.forEach((semester, index) => {
-    const courseRows = semester.querySelectorAll('.courseRow');
-    let courseNames = [];
-    let totalCredits = 0;
-
-    courseRows.forEach(row => {
-      const inputs = row.querySelectorAll('input');
-      const courseName = inputs[0]?.value || '';
-      const credit = parseFloat(inputs[1]?.value) || 0;
-
-      if (courseName) courseNames.push(courseName);
-      totalCredits += credit;
-    });
-
-    const semesterResultText = semester.querySelector('.semesterResult')?.innerText || '';
-    const cumulativeResultText = semester.querySelector('.cumulativeCGPA')?.innerText || '';
-
-    const gpaMatch = semesterResultText.match(/GPA:\s*([\d.]+)/i);
-    const cgpaMatch = cumulativeResultText.match(/CGPA:\s*([\d.]+)/i);
-    const classMatch = cumulativeResultText.match(/Class:\s*(.+)/i);
-
-    const gpa = gpaMatch ? gpaMatch[1] : '-';
-    const cgpa = cgpaMatch ? cgpaMatch[1] : '-';
-    const className = classMatch ? classMatch[1] : '-';
-
-    summaryTable += `
-      <tr>
-        <td>Semester ${index + 1}</td>
-        <td>${courseNames.join(', ')}</td>
-        <td>${totalCredits}</td>
-        <td>${gpa}</td>
-        <td>${cgpa}</td>
-        <td>${className}</td>
-      </tr>
-    `;
-  });
-
-  summaryTable += '</table><br/>';
-  printContent += summaryTable;
-
-  // Print detailed course info per semester
-  semesters.forEach((semester, index) => {
-    printContent += `<h3>Semester ${index + 1}</h3>`;
-    printContent += `
-      <table border="1" cellspacing="0" cellpadding="8" width="100%">
-        <tr>
-          <th>Course Name</th>
-          <th>Credit Hours</th>
-          <th>Marks</th>
-          <th>Grade</th>
-        </tr>
-    `;
-
-    const courseRows = semester.querySelectorAll('.courseRow');
-    courseRows.forEach(row => {
-      const inputs = row.querySelectorAll('input');
-      const grade = row.querySelector('.grade-box').innerText || '-';
-      printContent += `
-        <tr>
-          <td>${inputs[0]?.value || ''}</td>
-          <td>${inputs[1]?.value || ''}</td>
-          <td>${inputs[2]?.value || ''}</td>
-          <td>${grade}</td>
-        </tr>
-      `;
-    });
-
-    const semesterResult = semester.querySelector('.semesterResult')?.innerText || '';
-    printContent += `</table><p><strong>${semesterResult}</strong></p><br/>`;
-  });
-
-  const overallGPAInfo = document.getElementById('cgpaResult').innerText;
-  printContent += `<hr/><p><strong>${overallGPAInfo}</strong></p>`;
-
-  const printWindow = window.open('', '', 'width=800,height=600');
-  printWindow.document.write(`
-    <html><head><title>Print Results</title>
-    <style>
-      body { font-family: Arial, sans-serif; padding: 20px; }
-      table { border-collapse: collapse; width: 100%; }
-      th, td { border: 1px solid #999; text-align: center; padding: 8px; }
-      img { margin-bottom: 10px; }
-      @media print { button { display: none; } }
-    </style>
-    </head><body>${printContent}</body></html>
-  `);
-  printWindow.document.close();
-  printWindow.print();
-}
-
