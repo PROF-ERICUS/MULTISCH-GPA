@@ -10,7 +10,7 @@
   <div id="popup" class="popup">
     <div class="popup-content">
       <h3>Designed & Developed by Eric Andoh</h3>
-      <p>Eric is an IT student at GCTU(LEVEL 300) and this system helps you calculate your academic performance using the official GCTU grading system.</p>
+      <p>Eric is an IT student at GCTU and this system helps you calculate your academic performance using the official GCTU grading system.</p>
       <button onclick="closePopup()">Continue</button>
     </div>
   </div>
@@ -46,27 +46,31 @@
           <div class="semesterResult"></div>
         </div>
       </div>
-      <button type="button" onclick="addSemester()"> ➕Add Another Semester</button>
+      <button type="button" onclick="addSemester()">➕Add Another Semester</button>
+      
     </form>
     <button type="button" onclick="calculateCGPA()">Calculate CGPA</button>
-    <button type="button" onclick="resetForm()"> 🔄Reset All</button>
+    <button type="button" onclick="resetForm()">🔄Reset All</button>
     <button type="button" onclick="printResults()">Print Results</button>
-    
-
+ 
     <!-- WhatsApp Chat Button -->
     <div class="whatsapp-chat">
       <a href="https://wa.link/wn9zbf" target="_blank">
         <button class="whatsapp-button">Chat with Developer on WhatsApp</button>
       </a>
     </div>
+    
 
     <div id="cgpaResult" class="result-display"></div>
-       <div id="usernameDisplay" style="font-weight:600; margin:10px 0; color:var(--primary);"></div>
+
+  
+    <div id="usernameDisplay" style="font-weight:600; margin:10px 0; color:var(--primary);"></div>
 <button onclick="switchUser()">Switch User</button>
+
+
+    
   </div>
 
   <script src="js/gctu.js"></script>
 </body>
 </html>
-
-
