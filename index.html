@@ -25,6 +25,37 @@
       font-size: 24px;
     }
 
+    /* --- New Auth Button Style --- */
+    #authBtn {
+      background: #007bff;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      margin-bottom: 20px;
+      transition: background 0.3s;
+      text-decoration: none; /* Treat it like a link */
+      display: inline-block;
+      font-size: 16px;
+    }
+
+    #authBtn:hover {
+      background: #0056b3;
+    }
+
+    /* Style for the Logout State (Red button) */
+    #authBtn.logout {
+      background: #dc3545; /* Red color for log out */
+    }
+
+    #authBtn.logout:hover {
+      background: #c82333;
+    }
+    /* --- End New Auth Button Style --- */
+
+
     .school-logos {
       display: flex;
       gap: 30px;
@@ -101,23 +132,22 @@
       color: #333;
     }
     #amount {
-  padding: 12px 15px;
-  border: 2px solid #290bec;
-  border-radius: 30px;
-  width: 80%;
-  max-width: 250px;
-  font-size: 16px;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-  outline: none;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-  margin-bottom: 15px;
-}
+      padding: 12px 15px;
+      border: 2px solid #290bec;
+      border-radius: 30px;
+      width: 80%;
+      max-width: 250px;
+      font-size: 16px;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      outline: none;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      margin-bottom: 15px;
+    }
 
-#amount:focus {
-  border-color: #ff6f61;
-  box-shadow: 0 0 8px rgba(255, 111, 97, 0.3);
-}
-
+    #amount:focus {
+      border-color: #ff6f61;
+      box-shadow: 0 0 8px rgba(255, 111, 97, 0.3);
+    }
 
     /* Enhanced Donate Button */
     .whatsapp-button {
@@ -173,49 +203,40 @@
       h1 {
         font-size: 20px;
       }
-      .coming-soon-banner {
-  width: 100%;
-  overflow: hidden;
-  background: linear-gradient(to right, #ff6f61, #ff3d5f);
-  color: white;
-  font-weight: bold;
-  font-size: 18px;
-  padding: 10px 0;
-  position: relative;
-  box-sizing: border-box;
-  white-space: nowrap;
-}
+      
+      .rotating-banner {
+        width: 100%;
+        overflow: hidden;
+        background: linear-gradient(to right, #ff6f61, #ff3d5f);
+        color: white;
+        font-weight: bold;
+        font-size: 18px;
+        padding: 12px 0;
+        text-align: center;
+        position: relative;
+        box-sizing: border-box;
+        white-space: nowrap;
+      }
 
-.rotating-banner {
-  width: 100%;
-  background: linear-gradient(to right, #ff6f61, #ff3d5f);
-  color: white;
-  font-weight: bold;
-  font-size: 18px;
-  padding: 12px 0;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-}
+      .rotating-message {
+        animation: fadeMessage 1s ease-in-out;
+        transition: opacity 1s ease-in-out;
+      }
 
-.rotating-message {
-  animation: fadeMessage 1s ease-in-out;
-  transition: opacity 1s ease-in-out;
-}
-
-@keyframes fadeMessage {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
+      @keyframes fadeMessage {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
     }
   </style>
 </head>
 <body>
   <h1>Select Your School</h1>
   <div class="rotating-banner">
-  <div class="rotating-message" id="messageBox">🚀 New schools are coming soon.</div>
-</div>
+    <div class="rotating-message" id="messageBox">🚀 New schools are coming soon.</div>
+  </div>
+
+  <button id="authBtn" onclick="handleAuthAction()">Log In / Sign Up</button>
   <div class="school-logos">
     <a class="school-logo" href="gctu.html">
       <img src="gctu logo.jpg" alt="GCTU Logo" />
@@ -241,11 +262,11 @@
       <img src="ttu.logo.png" alt="TTU Logo" />
       <span>TTU</span>
     </a>
-     <a class="school-logo" href="gimpa.html">
+    <a class="school-logo" href="gimpa.html">
       <img src="gimpa.png" alt="GIMPA Logo" />
       <span>GIMPA</span>
     </a>
-     <a class="school-logo" href="umat.html">
+    <a class="school-logo" href="umat.html">
       <img src="umat logo.jpeg" alt="UMAT Logo" />
       <span>UMAT</span>
     </a>
@@ -262,6 +283,7 @@
   
   <script src="https://js.paystack.co/v1/inline.js"></script>
   <script>
+    // --- PAYSTACK DONATION LOGIC ---
     function payWithPaystack() {
       let amount = document.getElementById("amount").value;
   
@@ -287,31 +309,80 @@
       });
       handler.openIframe();
     }
-     const messages = [
-  "🚀 New schools are coming soon.",
-  "🎯 Admission opens next semester.",
-  "📢 Stay connected for updates!",
-  "📚 Explore new programs and opportunities."
-];
+    
+    // --- ROTATING MESSAGE BANNER LOGIC ---
+    const messages = [
+      "🚀 New schools are coming soon.",
+      "🎯 Admission opens next semester.",
+      "📢 Stay connected for updates!",
+      "📚 Explore new programs and opportunities."
+    ];
 
-let index = 0;
-const messageBox = document.getElementById("messageBox");
+    let index = 0;
+    const messageBox = document.getElementById("messageBox");
 
-setInterval(() => {
-  index = (index + 1) % messages.length;
-  messageBox.style.opacity = 0;
+    setInterval(() => {
+      index = (index + 1) % messages.length;
+      messageBox.style.opacity = 0;
 
-  setTimeout(() => {
-    messageBox.textContent = messages[index];
-    messageBox.style.opacity = 1;
-  }, 500);
-}, 4000);
+      setTimeout(() => {
+        messageBox.textContent = messages[index];
+        messageBox.style.opacity = 1;
+      }, 500);
+    }, 4000);
+    
+    // ======================================================
+    // --- LOGIN / LOGOUT / AUTHENTICATION LOGIC ---
+    // ======================================================
+    
+    // 1. LOGOUT FUNCTION
+    function handleLogout() {
+      // Clear client-side session data
+      localStorage.removeItem('userToken');
+      localStorage.removeItem('username');
+      
+      alert('You have been logged out successfully.');
+      window.location.href = 'index.html'; // Reload the index page to update the button state
+    }
 
+    // 2. AUTH ACTION HANDLER (Used by the button's onclick)
+    function handleAuthAction() {
+        const token = localStorage.getItem('userToken');
+        
+        if (token) {
+            // If token exists, the button says "Logout" -> Execute logout
+            handleLogout();
+        } else {
+            // If no token exists, the button says "Log In / Sign Up" -> Redirect to login page
+            window.location.href = 'login.html';
+        }
+    }
+
+    // 3. CHECK USER STATUS AND DYNAMICALLY UPDATE BUTTON
+    function checkUserStatus() {
+        const token = localStorage.getItem('userToken');
+        const username = localStorage.getItem('username');
+        const authBtn = document.getElementById('authBtn');
+        
+        if (!authBtn) return; // Exit if button not found
+
+        if (token) {
+            // User is logged in: Change button to Logout (Red)
+            authBtn.textContent = `Logout (${username || 'User'})`;
+            authBtn.classList.add('logout');
+        } else {
+            // User is logged out: Change button to Login/Sign Up (Blue)
+            authBtn.textContent = 'Log In / Sign Up';
+            authBtn.classList.remove('logout');
+        }
+    }
+
+    // Run the status check when the page loads
+    document.addEventListener('DOMContentLoaded', checkUserStatus);
+    
+    // The previous logout button style on the other pages needs to be adjusted 
+    // to use the checkUserStatus logic as well for consistency.
+    // However, for this index.html, the new logic above is complete.
   </script>
 </body>
 </html>
-
-
-
-
-
