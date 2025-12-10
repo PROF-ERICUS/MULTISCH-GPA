@@ -7,6 +7,55 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <script>
+    // ==========================================================
+    // 1. ACCESS CONTROL: Deny access if user is not logged in
+    // ==========================================================
+    const userToken = localStorage.getItem('userToken');
+    
+    if (!userToken) {
+        alert("Access Denied: Please log in or sign up to use the calculator.");
+        window.location.href = 'login.html';
+        // Hide body content to prevent brief flash before redirect
+        document.body.style.display = 'none'; 
+        // Stop script execution
+        throw new Error("Unauthorized access. Redirecting."); 
+    }
+
+    // ==========================================================
+    // 2. USER SESSION FUNCTIONS
+    // ==========================================================
+    
+    // Function to display the user's name and index number
+    function displayUserInfo() {
+        // Retrieve username and index number
+        const username = localStorage.getItem('username') || 'Student';
+        const indexNumber = localStorage.getItem('userIndexNumber') || 'N/A';
+        const displayElement = document.getElementById('usernameDisplay');
+
+        if (displayElement) {
+            // Display both username and index number
+            displayElement.innerHTML = `Welcome, ${username} (Index: ${indexNumber})`;
+        }
+    }
+
+    // Function to log out the current user
+    function switchUser() {
+        if (confirm("Are you sure you want to switch accounts/log out?")) {
+            // Clear all user session data
+            localStorage.removeItem('userToken');
+            localStorage.removeItem('username');
+            localStorage.removeItem('userIndexNumber');
+
+            // Redirect to login page
+            window.location.href = 'login.html';
+        }
+    }
+
+    // Run the display function once the page fully loads
+    window.onload = displayUserInfo;
+  </script>
+  
   <div id="popup" class="popup">
     <div class="popup-content">
       <h3>Designed & Developed by Eric Andoh</h3>
@@ -64,10 +113,12 @@
     
     <div id="cgpaResult" class="result-display"></div>
     <div id="fgpaResult"></div>
+    <div id="usernameDisplay" style="font-weight:600; margin:10px 0; color:var(--primary);"></div>
+<button onclick="switchUser()">Switch User</button>
+
     
   </div>
 
-  <script src="js/umat.js"></script>
+  <script src="js/legon.js"></script>
 </body>
 </html>
-
